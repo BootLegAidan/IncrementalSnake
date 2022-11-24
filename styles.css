@@ -1,0 +1,76 @@
+:root {
+  --primary: #252525;
+  --secondary: #bbb;
+  --tertiary: #101010;
+  --margin: 10px;
+  height: 100%;
+  width: 100%
+}
+body {
+  background: var(--primary);
+  display: flex;
+  margin: var(--margin)
+}
+canvas {
+  box-sizing: border-box;
+  border: var(--secondary) 1px solid;
+  /* height: calc(100vh - (var(--margin) * 2)); */
+  width: 100%;
+}
+#snakeContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 45vw;
+  height: calc(100vh - (var(--margin) * 2));
+  position: fixed;
+}
+#info {
+  color: var(--secondary)
+}
+#upgradePopUp {
+  position: absolute;
+  width: 90vw;
+  height: 1em;
+  top: -5em;
+  left: 0vw;
+  transform: translatey(-0.5em);
+  color: var(--secondary);
+  font-size: 5em;
+  text-align: center;
+  /* display: none; */
+  font-family: 'Press Start 2P', cursive;
+}
+.slide {
+  animation: slideIn 2s;
+}
+.sidePanel {
+  color: var(--secondary);
+  width: 45vw;
+  padding: 15px;
+  right: 0;
+  position: absolute;
+}
+h1, #upgrades {
+  text-align: center;
+}
+button {
+  border: 1.5px solid var(--secondary);
+  background: var(--primary);
+  color: var(--secondary);
+  padding: 10px;
+  width: 30vw;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+button.canBuy {
+  background: var(--secondary);
+  color: var(--primary);
+}
+@keyframes slideIn {
+  /* 0% {top: -5em;} */
+  25% {top: 50vh}
+  75% {top: 50vh}
+  100% {top: -5em; }
+}
