@@ -366,7 +366,7 @@ let autoUpgrade = new Upgrade({
   cost: 1000,
   name: 'Auto Play',
   level: 0,
-  onBuy: (x) => {x.el.remove();game.autoplay=true}
+  onBuy: (x) => {x.el.remove();game.auto=true}
 })
 
 upgrades.push(moneyUpgrade,speedUpgrade,autoUpgrade)
