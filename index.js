@@ -1,5 +1,4 @@
-// let c = document.getElementById('canvas')
-// let ctx = c.getContext('2d')
+
 let infoEl = document.getElementById('info');
 let gameCont = document.getElementById('snakeContainer')
 let upgradeEl = document.getElementById('upgradePopUp')
@@ -43,7 +42,6 @@ class World {
 
     this.ctx = this.c.getContext('2d')
     if (this.show) {
-      // document.body.insertBefore(this.c,info)
       gameCont.append(this.c)
     }
 
@@ -58,7 +56,6 @@ class World {
       size: 2
     }
     this.addFood()
-    // this.tick()
   }
   autoplay () {
     let sX = this.snake.parts[0].x
@@ -91,7 +88,6 @@ class World {
       }
       let tries = 0
       while ((this.collide(i.x,i.y) || this.foodCheck(i.x,i.y,this.food.indexOf(i))) && tries < 50) {
-        console.log(this.food.indexOf(i))
         tries++
         i.x = Math.floor(Math.random() * this.w)
         i.y = Math.floor(Math.random() * this.h)
@@ -123,7 +119,7 @@ class World {
         this.w = 5
         this.h = 5
         upgradeEl.innerHTML = 'Speed++'
-        this.tickDelay *= 0.9
+        this.tickDelay *= 0.75
       }
       if (upgraded) {
         upgradeEl.classList.remove('slide')
@@ -198,7 +194,6 @@ class World {
     if (this.snake.parts.length > this.snake.size) {
       this.snake.parts.pop()
     } else if (this.snake.parts.length < this.snake.size) {
-      // this.snake.parts.unshift({x: x % this.w, y: y % this.h})
       this.snake.parts.unshift({})
     }
 
@@ -211,7 +206,6 @@ class World {
   drawSnake () {
     for (let i = 0; i < this.snake.parts.length; i++) {
       if (this.snakeCol == 'rainbow') {
-        // this.ctx.fillStyle = `hsl(${i*10},70%,70%)`
         this.ctx.fillStyle = `hsl(${(360/this.snake.parts.length)*i},70%,70%)`
       } else if (this.snakeCol == 'alternate'){
         this.ctx.fillStyle = `hsl(${60 + ((i % 3) * 40)},70%,70%)`
@@ -231,19 +225,13 @@ class World {
             (nextPart.y == part.y+1 ? -1 : 1)
           ]
         } catch {
-          console.log('next: ', nextPart.x, nextPart.y)
-          console.log(part)
-          console.log('current: ', part.x, part.y)
           margins = [1,1,1,1]
         }
-        // console.log(i,margins)
       }
 
 
       this.ctx.imageSmoothingEnabled = true;
-      // this.ctx.fillRect(Math.floor((part.x * this.cell) + (this.pad * margins[1])), Math.floor((part.y * this.cell) + (this.pad * margins[0])), Math.floor(this.cell - (this.pad * 2 * margins[2])  + ((this.pad)*-(margins[1]-1))), Math.floor(this.cell - (this.pad * 2 * margins[3]) + ((this.pad)*-(margins[0]-1))))
       this.ctx.fillRect(((part.x * this.cell) + (this.pad * margins[1])), ((part.y * this.cell) + (this.pad * margins[0])), (this.cell - (this.pad * 2 * margins[2])  + ((this.pad)*-(margins[1]-1))), (this.cell - (this.pad * 2 * margins[3]) + ((this.pad)*-(margins[0]-1))))
-      // this.ctx.fillRect(((part.x * this.cell) + ((this.pad * 1.1) * margins[1])), ((part.y * this.cell) + ((this.pad * 1.1) * margins[0])), (this.cell - ((this.pad * 1.1) * 2 * margins[2])  + ((this.pad * 1.1)*-(margins[1]-1))), (this.cell - ((this.pad * 1.1) * 2 * margins[3]) + ((this.pad * 1.1)*-(margins[0]-1))))
 
     }
     if (this.eyes) {
@@ -253,10 +241,7 @@ class World {
         case 0: this.ctx.scale(1,-1); break;
         case 1: this.ctx.rotate(Math.PI/2); break;
         case 2: this.ctx.rotate(-Math.PI/2); break;
-        // case 2: break;
-        // case 3: this.ctx.rotate(Math.PI*2); break;
       }
-      // this.ctx.fillRect(-2.5,-2.5,5,5)
       this.ctx.fillStyle = 'white'
       this.ctx.fillRect(this.pad*0.5,this.pad*0.5,(this.cell-(this.pad*1.5))/3,(this.cell-(this.pad*1.5))/3)
 
@@ -278,7 +263,6 @@ class World {
         (this.cell-(this.pad*1.5))/7,
         (this.cell-(this.pad*1.5))/7
       )
-      // this.ctx.fillRect(-this.pad*2.5,this.pad*0.5,(this.cell-(this.pad*1.5))/3,(this.cell-(this.pad*1.5))/3)
 
       this.ctx.resetTransform()
     }
@@ -335,7 +319,6 @@ class Upgrade {
     `
   }
   buy () {
-    console.log(this.cost)
     if (this.canBuy) {
       money -= this.cost
       this.lvl ++
@@ -360,7 +343,7 @@ let speedUpgrade = new Upgrade({
   cost: 250,
   name: 'Speed Up',
   level: 0,
-  onBuy: (x) => {x.cost+=Math.log(x.cost)**2.5;game.tickDelay*=0.99}
+  onBuy: (x) => {x.cost+=Math.log(x.cost)**2.5;game.tickDelay*=0.9}
 })
 let autoUpgrade = new Upgrade({
   cost: 1000,
@@ -424,7 +407,6 @@ function load() {
       game.addFood()
     }
   }
-  // game.snake.size = (saveData.game.snakeSize || 2)
 
   moneyUpgrade.cost = (saveData.upgrades.moneyCost || 10)
   moneyUpgrade.lvl = (saveData.upgrades.moneyLevel || 1)
@@ -433,12 +415,8 @@ function load() {
   autoUpgrade.cost = (saveData.upgrades.autoCost || 1000)
   autoUpgrade.lvl = (saveData.upgrades.autoLevel || 0)
 }
-// if (localStorage.getItem('snakeIncSave')) {
-  // load()
-// }
 
 document.addEventListener('keydown',(e)=>{
-  console.log(e.key.toLowerCase())
   switch (e.key.toLowerCase()) {
     case 'w':
     case 'arrowup':
