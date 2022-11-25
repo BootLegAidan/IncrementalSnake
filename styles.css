@@ -9,13 +9,14 @@
 body {
   background: var(--primary);
   display: flex;
-  margin: var(--margin)
+  margin: var(--margin);
 }
 canvas {
   box-sizing: border-box;
   border: var(--secondary) 1px solid;
   /* height: calc(100vh - (var(--margin) * 2)); */
   width: 100%;
+  display: block;
 }
 #snakeContainer {
   display: flex;
@@ -24,11 +25,12 @@ canvas {
   width: 45vw;
   height: calc(100vh - (var(--margin) * 2));
   position: fixed;
+  z-index: 1
 }
 #info {
   color: var(--secondary)
 }
-#upgradePopUp {
+#upgradeText {
   position: absolute;
   width: 90vw;
   height: 1em;
@@ -40,6 +42,7 @@ canvas {
   text-align: center;
   /* display: none; */
   font-family: 'Press Start 2P', cursive;
+  -webkit-text-stroke: 2.5px var(--primary);
 }
 .slide {
   animation: slideIn 2s;
@@ -48,6 +51,7 @@ canvas {
   color: var(--secondary);
   width: 45vw;
   padding: 15px;
+  padding-top: 20px;
   right: 0;
   position: absolute;
 }
@@ -68,6 +72,20 @@ button.canBuy {
   background: var(--secondary);
   color: var(--primary);
 }
+.reset, .sound {
+  display: inline-block;
+  width: 125px;
+  height: 4.5em;
+  margin-bottom: 1em;
+}
+.header {
+  z-index: 10;
+
+}
+.reset {
+  background: #400;
+}
+button.movement {}
 @keyframes slideIn {
   /* 0% {top: -5em;} */
   25% {top: 50vh}

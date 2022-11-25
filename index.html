@@ -9,7 +9,12 @@
     </style>
   </head>
   <body>
-    <span id="snakeContainer"></span>
+    <div class="header">
+      <button class="reset" onclick="reset()">Reset Progress</button>
+      <button class="sound" onclick="this.remove();enableSound=false">Disable Sound</button>
+    </div>
+    <span id="snakeContainer">
+    </span>
     <div class="sidePanel">
       <h1>Stats</h1>
       <div id="info">Info</div>
@@ -17,7 +22,8 @@
       <div id="upgrades">
       </div>
     </div>
-    <div id="upgradePopUp">Upgrade</div>
+    <div id="upgradeText">Upgrade</div>
     <script src="index.js" charset="utf-8"></script>
+    <script src="touchControls.js" charset="utf-8"></script>
   </body>
 </html>
