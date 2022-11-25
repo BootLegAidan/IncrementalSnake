@@ -116,8 +116,8 @@ class World {
         upgraded = true
       }
       if ((this.w+this.h)/2 > 25) {
-        this.w = 5
-        this.h = 5
+        this.w = 6
+        this.h = 6
         upgradeEl.innerHTML = 'Speed++'
         this.tickDelay *= 0.75
       }
