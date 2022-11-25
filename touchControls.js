@@ -42,5 +42,5 @@ function handleTouchMove(evt) {
     /* reset values */
     xDown = null;
     yDown = null;
-    game.snake.draw()
+    game.draw()
 };
