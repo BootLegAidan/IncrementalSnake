@@ -10,6 +10,7 @@ body {
   background: var(--primary);
   display: flex;
   margin: var(--margin);
+  overflow: hidden;
 }
 canvas {
   box-sizing: border-box;
@@ -54,6 +55,8 @@ canvas {
   padding-top: 20px;
   right: 0;
   position: absolute;
+  height: calc(100vh - 15px);
+  overflow-y: scroll;
 }
 h1, #upgrades {
   text-align: center;
@@ -78,8 +81,9 @@ button.canBuy {
   height: 4.5em;
   margin-bottom: 1em;
 }
-.header {
-  z-index: 10;
+.footer {
+  top: 100%;
+  position: absolute;
 
 }
 .reset {

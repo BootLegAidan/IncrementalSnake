@@ -31,7 +31,7 @@ function updateInfo() {
 }
 function playSound(name){
   if (enableSound) {
-    let snd = new Audio("Sounds/"+name+".mp3"); // buffers automatically when created
+    let snd = new Audio("Sounds/"+name+".wav"); // buffers automatically when created
     snd.play();
   }
 }
@@ -501,8 +501,8 @@ function load() {
 function reset () {
   // if (confirm('Are you sure you want to reset? This cannot be undone.')){
     resetting = true
-    localStorage.setItem('snakeIncSave','{}')
-    load()
+    localStorage.removeItem('snakeIncSave')
+    // load()
     location.reload()
   // }
 }
@@ -545,5 +545,11 @@ document.addEventListener('keydown',(e)=>{
 window.onload = ()=>{
   loaded = true;
   load()
+  if (game.h % 2 == 1) {
+    game.h ++
+  }
+  if (game.w % 2 == 1) {
+    game.w ++
+  }
   game.resize()
 }
