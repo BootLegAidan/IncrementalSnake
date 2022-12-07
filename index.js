@@ -4,6 +4,7 @@ let upgradeEl = document.getElementById('upgradeText')
 let upgradePanel = document.getElementById('upgrades')
 let money = 0
 let moneyMod = 1
+let addedSize = 0
 let loaded = false
 let autoUnlocked = false
 let autoEnabled = false
@@ -22,11 +23,27 @@ function updateInfo() {
     Snake length: ${game.snake.size} pixels<br>
     Food count: ${game.food.length}<br>
     World size: ${game.w}x${game.h} pixels<br>
-    Speed: ${Math.floor((1000/game.tickDelay)*10)/10} ${1000/game.tickDelay==1?'move':'moves'} per second<br>
-    Unlock Efficiency: ${game.unlockEff}%
+    Unlock Efficiency: ${game.unlockEff}%<br>
+    ${Math.floor((1000/game.tickDelay)*100)/100} tick${Math.floor((1000/game.tickDelay)*100)/100==1?'':'s'} per second<br>
+    ${loopUpgrade.lvl} move${loopUpgrade.lvl==1?'':'s'} per tick<br>
+
   `
   if (loaded && !resetting) {
     save()
+  }
+
+  if (moneyMod < 1) {
+    moneyMod = 1
+  }
+
+  if (game.unlockEff >= 90) {
+    efficiencyUpgrade.el.remove()
+  }
+  if (loopUpgrade.lvl >= 25) {
+    loopUpgrade.el.remove()
+  }
+  if (speedUpgrade.lvl >= 150) {
+    speedUpgrade.el.remove()
   }
 }
 function playSound(name){
@@ -91,67 +108,70 @@ class World {
     }
   }
   tick () {
-    let size = this.snake.size
-    this.moveSnake()
-    if (this.auto && autoEnabled) {
-      this.autoplay()
-    }
-    for (let i of this.food) {
-      if (this.collide(i.x,i.y)) {
-        this.snake.size++
-        this.score ++
-        money += moneyModCalc()
-        playSound('eat')
+    for (let i = 0; i < loopUpgrade.lvl; i++) {
+      let size = this.snake.size
+      this.moveSnake()
+      if (this.auto && autoEnabled) {
+        this.autoplay()
       }
-      let tries = 0
-      while ((this.collide(i.x,i.y) || this.foodCheck(i.x,i.y,this.food.indexOf(i))) && tries < 1000) {
-        tries++
-        i.x = Math.floor(Math.random() * this.w)
-        i.y = Math.floor(Math.random() * this.h)
-        if (this.foodCol == 'random') {
-          i.col = '#' + Math.floor(Math.random()*16777215).toString(16)
+      for (let i of this.food) {
+        if (this.collide(i.x,i.y)) {
+          this.snake.size++
+          this.score ++
+          money += moneyModCalc()
+          playSound('eat')
+        }
+        let tries = 0
+        while ((this.collide(i.x,i.y) || this.foodCheck(i.x,i.y,this.food.indexOf(i))) || ((i.x < 0 || i.x > this.w) || (i.y < 0 || i.y > this.h)) && tries < 1000) {
+          tries++
+          i.x = Math.floor(Math.random() * this.w)
+          i.y = Math.floor(Math.random() * this.h)
+          if (this.foodCol == 'random') {
+            i.col = '#' + Math.floor(Math.random()*16777215).toString(16)
+          }
         }
       }
-    }
-    if (this.upgrades) {
-      let upgraded = false
-      if (this.snake.size >= (this.w-2)*(this.h-2)) {
-        this.snake.size = Math.ceil(this.snake.size*(this.unlockEff/100))
-        this.snake.parts.length = Math.ceil(this.snake.parts.length*(this.unlockEff/100))
-        this.addFood()
-        upgradeEl.innerHTML = 'Food++'
-        upgraded = true
-      }
-      if (this.food.length >= (this.w,this.h)/2) {
-        money += (this.w * this.h) * (moneyMod * 0.5)
-        switch (Math.round(Math.random())) {
-          case 0 : this.w +=2; break;
-          case 1: this.h +=2; break;
+      if (this.upgrades) {
+        let upgraded = false
+        if (this.snake.size >= (this.w-2)*(this.h-2)) {
+          this.snake.size = Math.ceil(this.snake.size*(this.unlockEff/100))
+          this.snake.parts.length = Math.ceil(this.snake.parts.length*(this.unlockEff/100))
+          this.addFood()
+          upgradeEl.innerHTML = 'Food++'
+          upgraded = true
         }
-        this.food.length = Math.ceil(this.food.length*(this.unlockEff/100))
-        this.resize()
-        upgradeEl.innerHTML = 'Size++'
-        upgraded = true
-      }
-      if ((this.w+this.h)/2 > 25 && false) {
-        this.w = 6
-        this.h = 6
-        upgradeEl.innerHTML = 'Speed++'
-        this.tickDelay *= 0.75
-      }
-      if (upgraded) {
-        playSound('unlock')
-        upgradeEl.classList.remove('slide')
-        upgradeEl.offsetWidth
-        upgradeEl.classList.add('slide')
+        if (this.food.length >= (this.w,this.h)/2) {
+          money += (this.w * this.h) * (moneyMod * 0.5)
+          switch (Math.round(Math.random())) {
+            case 0 : this.w +=2; break;
+            case 1: this.h +=2; break;
+          }
+          addedSize++
+          this.food.length = Math.ceil(this.food.length*(this.unlockEff/100))
+          this.resize()
+          upgradeEl.innerHTML = 'Size++'
+          upgraded = true
+        }
+        if ((this.w+this.h)/2 > 25 && false) {
+          this.w = 6
+          this.h = 6
+          upgradeEl.innerHTML = 'Speed++'
+          this.tickDelay *= 0.75
+        }
+        if (upgraded) {
+          playSound('unlock')
+          upgradeEl.classList.remove('slide')
+          upgradeEl.offsetWidth
+          upgradeEl.classList.add('slide')
+        }
       }
     }
     this.draw()
-    let fakeThis = this
-
     updateInfo()
-
-    setTimeout(()=>{fakeThis.tick()}, this.tickDelay)
+    let fakeThis = this
+    setTimeout(()=>{
+      fakeThis.tick()
+    }, this.tickDelay)
   }
   resize () {
     if (this.w > this.c.width / 100) {
@@ -227,13 +247,14 @@ class World {
   }
   drawSnake () {
     for (let i = 0; i < this.snake.parts.length; i++) {
-      if (this.snakeCol == 'rainbow') {
-        this.ctx.fillStyle = `hsl(${(360/this.snake.parts.length)*i},70%,70%)`
-      } else if (this.snakeCol == 'alternate'){
-        this.ctx.fillStyle = `hsl(${60 + ((i % 3) * 40)},70%,70%)`
-      } else {
-        this.ctx.fillStyle = this.snakeCol
+      switch (this.snakeCol) {
+        case 'alternate': this.ctx.fillStyle = `hsl(${60 + ((i % 3) * 40)},70%,70%)`; break;
+        case 'rainbow': this.ctx.fillStyle = `hsl(${(360/this.snake.parts.length)*i},70%,70%)`; break;
+        case 'xmas': this.ctx.fillStyle = `rgb(${[255,45][i%2]},${[40,200][i%2]},${[40,45][i%2]})`; break;
+        case 'hallow': this.ctx.fillStyle = `rgb(${[255,150][i%2]},${[160,30][i%2]},${[40,255][i%2]})`; break;
+        default: this.ctx.fillStyle = this.snakeCol
       }
+
       let part = this.snake.parts[i]
       let margins = [1,1,1,1]
       if (i != this.snake.parts.length - 1) {
@@ -291,7 +312,7 @@ class World {
     let collide = false
     let parts = this.snake.parts
     if (ignoreHead) {
-      parts = parts.slice(1,-1)
+      parts = parts.slice(1)
     }
     for (let i of parts) {
       if (i.x == x && i.y == y) {
@@ -411,8 +432,14 @@ let autoUpgrade = new Upgrade({
     })
   }
 })
+let loopUpgrade = new Upgrade({
+  cost: 2500,
+  name: 'Move Multiplier',
+  level: 1,
+  onBuy: (x) => {x.cost+=(Math.log(x.cost*10)*10)**1.5;}
+})
 
-upgrades.push(moneyUpgrade,speedUpgrade,autoUpgrade,efficiencyUpgrade)
+upgrades.push(moneyUpgrade,speedUpgrade,autoUpgrade,efficiencyUpgrade,loopUpgrade)
 
 setInterval(()=>{
   for (let i of upgrades) {
@@ -433,15 +460,24 @@ let game = new World({
   snakeColor: 'alternate'
 })
 game.tick()
+if (Math.random() <= 0.05) {
+  game.snakeCol = 'rainbow'
+}
+let d = new Date()
+if (d.getMonth() == 11) {
+  game.snakeCol = 'xmas'
+}
+if (d.getMonth() == 9) {
+  game.snakeCol = 'hallow'
+}
 
 function save() {
   localStorage.setItem('snakeIncSave',JSON.stringify({
     money: money,
     moneyMod: moneyMod,
+    addedSize: addedSize,
     haveAuto: autoUnlocked,
     game: {
-      w: game.w,
-      h: game.h,
       tickDelay: game.tickDelay,
       auto: game.auto,
       unlockEff: game.unlockEff,
@@ -456,7 +492,10 @@ function save() {
       autoCost: autoUpgrade.cost,
       autoLevel: autoUpgrade.lvl,
       effCost: efficiencyUpgrade.cost,
-      effLevel: efficiencyUpgrade.lvl
+      effLevel: efficiencyUpgrade.lvl,
+
+      loopCost: loopUpgrade.cost,
+      loopLevel: loopUpgrade.lvl
     }
   }))
 }
@@ -464,16 +503,26 @@ function load() {
   let saveData = JSON.parse(localStorage.getItem('snakeIncSave'))
   money = (saveData.money || 0)
   moneyMod = (saveData.moneyMod || 1)
+  addedSize = (saveData.addedSize || 0)
   autoUnlocked = (saveData.haveAuto || false)
   if (autoUnlocked) {
     autoUpgrade.cost = 0;
     autoUpgrade.canBuy = true
     autoUpgrade.buy()
   }
+  if (addedSize >= 1) {
+    for (let i = 0; i < addedSize; i++) {
+      let dimension = Math.round(Math.random())
+      switch (dimension) {
+        case 0: game.h++; break
+        case 1: game.w++; break
+      }
+    }
+  }
 
   if (saveData.game) {
-    game.w = (saveData.game.w || 6)
-    game.h = (saveData.game.h || 6)
+    // game.w = 6
+    // game.h = 6
     game.tickDelay = (saveData.game.tickDelay || 1000)
     game.auto = (saveData.game.auto || false)
     game.unlockEff = (saveData.game.unlockEff || 1)
@@ -496,6 +545,9 @@ function load() {
 
     efficiencyUpgrade.cost = (saveData.upgrades.effCost || 250)
     efficiencyUpgrade.lvl = (saveData.upgrades.effLevel || 1)
+
+    loopUpgrade.cost = (saveData.upgrades.loopCost || 2500)
+    loopUpgrade.lvl = (saveData.upgrades.loopLevel || 1)
   }
 }
 function reset () {
