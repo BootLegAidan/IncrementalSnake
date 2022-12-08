@@ -1,5 +1,5 @@
-game.c.addEventListener('touchstart', handleTouchStart, false);
-game.c.addEventListener('touchmove', handleTouchMove, false);
+document.addEventListener('touchstart', handleTouchStart, false);
+document.addEventListener('touchmove', handleTouchMove, false);
 
 var xDown = null;
 var yDown = null;
@@ -28,17 +28,26 @@ function handleTouchMove(evt) {
 
     if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {/*most significant*/
         if ( xDiff > 0 ) {
-          game.snake.dir = 2
-        } else {
+          if (game.snake.oldDir != 2) {
             game.snake.dir = 1
+          }
+        } else {
+          if (game.snake.oldDir != 1) {
+            game.snake.dir = 2
+          }
         }
     } else {
         if ( yDiff > 0 ) {
-            game.snake.dir = 3
-        } else {
+          if (game.snake.oldDir != 3) {
             game.snake.dir = 0
+          }
+        } else {
+          if (game.snake.oldDir != 0) {
+            game.snake.dir = 3
+          }
         }
     }
+    game.draw()
     /* reset values */
     xDown = null;
     yDown = null;

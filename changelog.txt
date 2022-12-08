@@ -1,0 +1,2 @@
+Removed the ability to turn around into your body
+Fixed touchscreen controls

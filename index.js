@@ -86,7 +86,8 @@ class World {
     this.snake = {
       parts: [{x: 0, y: 0}],
       dir: 3,
-      size: 2
+      size: 2,
+      oldDir: 3,
     }
     this.addFood()
   }
@@ -134,8 +135,8 @@ class World {
       if (this.upgrades) {
         let upgraded = false
         if (this.snake.size >= (this.w-2)*(this.h-2)) {
-          this.snake.size = Math.ceil(this.snake.size*(this.unlockEff/100))
-          this.snake.parts.length = Math.ceil(this.snake.parts.length*(this.unlockEff/100))
+          this.snake.size = Math.max(Math.ceil(this.snake.size*(this.unlockEff/100)),2)
+          this.snake.parts.length = Math.max(Math.ceil(this.snake.parts.length*(this.unlockEff/100)),2)
           this.addFood()
           upgradeEl.innerHTML = 'Food++'
           upgraded = true
@@ -218,13 +219,13 @@ class World {
     }
     let x = parseInt(this.snake.parts[0].x)
     let y = parseInt(this.snake.parts[0].y)
-
     switch (this.snake.dir) {
       case 0: y--; break
       case 1: x--; break
       case 2: x++; break
       case 3: y++; break
     }
+    this.snake.oldDir = this.snake.dir
     if (x < 0) {
       x = this.w - 1
     }
@@ -576,19 +577,26 @@ document.addEventListener('keydown',(e)=>{
   switch (e.key.toLowerCase()) {
     case 'w':
     case 'arrowup':
-      game.snake.dir = 0
+      if (game.snake.oldDir != 3) {
+        game.snake.dir = 0
+      }
       break;
     case 'a':
     case 'arrowleft':
-      game.snake.dir = 1
+      if (game.snake.oldDir != 2)
+        game.snake.dir = 1
       break;
     case 'd':
     case 'arrowright':
-      game.snake.dir = 2
+      if (game.snake.oldDir != 1) {
+        game.snake.dir = 2
+      }
       break;
     case 's':
     case 'arrowdown':
-      game.snake.dir = 3
+      if (game.snake.oldDir != 0) {
+        game.snake.dir = 3
+      }
       break;
   }
   game.draw()
