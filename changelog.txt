@@ -1,2 +1,14 @@
-Removed the ability to turn around into your body
-Fixed touchscreen controls
+v2.0.0
+- Added new upgrade (food potency)
+- Removed move multiplier upgrade
+- Added settings menu
+- Added volume slider
+- Size now persists through saves
+- Score is now saved
+- Added tooltips to explain upgrades
+- Rebalncing stuff
+- Pausing
+- Added a favicon
+
+- Made it so the snake can increase more than 1 segment in a frame
+- Put stuff into their own files

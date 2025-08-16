@@ -1,19 +1,15 @@
 let infoEl = document.getElementById('info');
 let gameCont = document.getElementById('snakeContainer')
-let upgradeEl = document.getElementById('upgradeText')
-let upgradePanel = document.getElementById('upgrades')
-let money = 0
 let moneyMod = 1
 let addedSize = 0
 let loaded = false
 let autoUnlocked = false
 let autoEnabled = false
 let resetConfirmations = 0
-let enableSound = true
 let resetting = false
 
 function moneyModCalc() {
-  return moneyMod * (1.01**game.snake.size)
+  return moneyMod * (1.01**game.snake.size+(game.score/150))
 }
 function updateInfo() {
   infoEl.innerHTML = `
@@ -22,10 +18,10 @@ function updateInfo() {
     Score: ${game.score}<br>
     Snake length: ${game.snake.size} pixels<br>
     Food count: ${game.food.length}<br>
+    Food deliciousness: ${game.foodEffect}<br>
     World size: ${game.w}x${game.h} pixels<br>
     Unlock Efficiency: ${game.unlockEff}%<br>
     ${Math.floor((1000/game.tickDelay)*100)/100} tick${Math.floor((1000/game.tickDelay)*100)/100==1?'':'s'} per second<br>
-    ${loopUpgrade.lvl} move${loopUpgrade.lvl==1?'':'s'} per tick<br>
 
   `
   if (loaded && !resetting) {
@@ -35,22 +31,11 @@ function updateInfo() {
   if (moneyMod < 1) {
     moneyMod = 1
   }
-
-  if (game.unlockEff >= 90) {
-    efficiencyUpgrade.el.remove()
-  }
-  if (loopUpgrade.lvl >= 25) {
-    loopUpgrade.el.remove()
-  }
-  if (speedUpgrade.lvl >= 150) {
-    speedUpgrade.el.remove()
-  }
 }
 function playSound(name){
-  if (enableSound) {
-    let snd = new Audio("Sounds/"+name+".wav"); // buffers automatically when created
-    snd.play();
-  }
+  let snd = new Audio("Sounds/"+name+".wav"); // buffers automatically when created
+  snd.volume = settings.volume/100
+  snd.play();
 }
 
 class World {
@@ -65,6 +50,9 @@ class World {
     this.upgrades = (options.upgrades || false)
     this.eyes = (options.drawEyes || true)
     this.unlockEff = (options.efficiency || options.unlockEff || 1)
+    this.foodEffect = (options.foodEffect || 1)
+    this.startLength = (options.startLength || 2)
+    this.paused = false
 
     this.c = document.createElement('canvas')
     if (this.w > this.c.width / 100) {
@@ -109,7 +97,8 @@ class World {
     }
   }
   tick () {
-    for (let i = 0; i < loopUpgrade.lvl; i++) {
+    let totalTime = performance.now()
+    if (!this.paused) {
       let size = this.snake.size
       this.moveSnake()
       if (this.auto && autoEnabled) {
@@ -117,7 +106,7 @@ class World {
       }
       for (let i of this.food) {
         if (this.collide(i.x,i.y)) {
-          this.snake.size++
+          this.snake.size+= this.foodEffect
           this.score ++
           money += moneyModCalc()
           playSound('eat')
@@ -135,8 +124,8 @@ class World {
       if (this.upgrades) {
         let upgraded = false
         if (this.snake.size >= (this.w-2)*(this.h-2)) {
-          this.snake.size = Math.max(Math.ceil(this.snake.size*(this.unlockEff/100)),2)
-          this.snake.parts.length = Math.max(Math.ceil(this.snake.parts.length*(this.unlockEff/100)),2)
+          this.snake.size = Math.max(Math.ceil(this.snake.size*(this.unlockEff/100)),this.startLength)
+          this.snake.parts.length = Math.max(Math.ceil(this.snake.parts.length*(this.unlockEff/100)),this.startLength)
           this.addFood()
           upgradeEl.innerHTML = 'Food++'
           upgraded = true
@@ -169,10 +158,11 @@ class World {
     }
     this.draw()
     updateInfo()
+    totalTime = performance.now() - totalTime
     let fakeThis = this
     setTimeout(()=>{
       fakeThis.tick()
-    }, this.tickDelay)
+    }, this.tickDelay-totalTime)
   }
   resize () {
     if (this.w > this.c.width / 100) {
@@ -187,10 +177,19 @@ class World {
     }
   }
   draw () {
-    for (let x = 0; x < this.w; x++){for (let y = 0; y < this.h; y++){this.ctx.fillStyle = 'white';this.ctx.fillRect(x * this.cell,y * this.cell,1,1)}}
+    // for (let x = 0; x < this.w; x++){for (let y = 0; y < this.h; y++){this.ctx.fillStyle = 'white';this.ctx.fillRect(x * this.cell,y * this.cell,1,1)}} // Grid for debugging
     this.ctx.clearRect(0,0,this.c.width,this.c.height)
     this.drawFood()
     this.drawSnake()
+    if (this.paused) {
+      let cssVars = window.getComputedStyle(document.body)
+      game.ctx.fillStyle = cssVars.getPropertyValue('--primary')
+      game.ctx.fillRect(game.c.width/2-55,game.c.height/2-105,35,160)
+      game.ctx.fillRect(game.c.width/2+20,game.c.height/2-105,35,160)
+      game.ctx.fillStyle = cssVars.getPropertyValue('--secondary')
+      game.ctx.fillRect(game.c.width/2-50,game.c.height/2-100,25,150)
+      game.ctx.fillRect(game.c.width/2+25,game.c.height/2-100,25,150)
+    }
   }
   addFood () {
     let newFood = {
@@ -205,8 +204,9 @@ class World {
     this.food.push(newFood)
   }
   drawFood () {
+    let cssVars = window.getComputedStyle(document.body)
     for (let i of this.food) {
-      this.ctx.fillStyle = '#bbb'
+      this.ctx.fillStyle = cssVars.getPropertyValue('--secondary')
       this.ctx.fillRect(Math.floor((i.x * this.cell) + (this.pad/2)), Math.floor((i.y * this.cell) + (this.pad / 2)), Math.floor(this.cell - this.pad), Math.floor(this.cell - this.pad))
       this.ctx.fillStyle = i.col
       this.ctx.fillRect(Math.floor((i.x * this.cell) + this.pad), Math.floor((i.y * this.cell) + this.pad), Math.floor(this.cell - (this.pad * 2)), Math.floor(this.cell - (this.pad * 2)))
@@ -236,11 +236,11 @@ class World {
     if (this.snake.parts.length > this.snake.size) {
       this.snake.parts.pop()
     } else if (this.snake.parts.length < this.snake.size) {
-      this.snake.parts.unshift({})
+      this.snake.parts.push({x:-this.snake.parts.length, y:20})
     }
 
     if (this.collide(this.snake.parts[0].x,this.snake.parts[0].y,(x)=>{return x},true)) {
-      this.snake.size = 2;
+      this.snake.size = this.startLength;
       this.snake.parts.length = 2
       this.score = 0;
       playSound('death')
@@ -333,123 +333,7 @@ class World {
     return collide
   }
 }
-class Upgrade {
-  constructor (options) {
-    this.cost = options.cost // Number - Starting cost of the upgrade
-    this.onBuy = options.onBuy // Function - Function to call when the upgrade is successfully purchased
-    this.lvl = (options.level || options.lvl || 0) // Number - Starting level of the upgrade
-    this.name = options.name // String - What text is displayed on the upgrade element
-    this.el = document.createElement('button')
 
-    upgradePanel.append(this.el)
-    let fakeThis = this
-    this.el.addEventListener('click',()=>{fakeThis.buy(fakeThis)})
-
-    this.update()
-  }
-  update () {
-    if (this.cost <= money) {
-      this.canBuy = true
-      this.el.classList.add('canBuy')
-    } else {
-      this.canBuy = false
-      this.el.classList.remove('canBuy')
-    }
-    this.el.innerHTML = `
-      ${this.name} - Lvl ${this.lvl}<br>
-      Cost: ${Math.ceil(this.cost)}
-    `
-  }
-  buy () {
-    if (this.canBuy) {
-      money -= this.cost
-      this.lvl ++
-
-      let fakeThis = this
-      this.onBuy(fakeThis)
-
-      updateInfo()
-      this.update()
-    }
-  }
-}
-class ToggleButton {
-  constructor (options) {
-    this.name = options.name // String - What text is on the button
-    this.clickFun = (options.function || options.fun || options.click || options.clickFun) // Function - What to do when the button is clicked
-
-    this.on = false
-    this.el = document.createElement('button')
-
-    upgradePanel.append(this.el)
-    let fakeThis = this
-    this.el.onclick = () => {
-      this.on = !this.on;
-      this.clickFun(fakeThis)
-      this.update()
-    }
-  }
-  update () {
-    this.el.innerHTML = `${this.name} - ${this.on ? 'On' : 'Off'}`
-    this.el.style.background = (this.on ? '#040' : '#400')
-  }
-}
-let upgrades = []
-let moneyUpgrade = new Upgrade({
-  cost: 10,
-  name: 'Money Multiplier',
-  level: 1,
-  onBuy: (x) => {x.cost+=Math.log(x.cost*1.25)**1.5;moneyMod++}
-})
-let speedUpgrade = new Upgrade({
-  cost: 250,
-  name: 'Speed Up',
-  level: 0,
-  onBuy: (x) => {x.cost+=Math.log(x.cost*2)**2.5;game.tickDelay*=0.95}
-})
-let efficiencyUpgrade = new Upgrade({
-  cost: 250,
-  name: 'Unlock Efficiency',
-  level: 1,
-  onBuy: (x) => {x.cost+=Math.log(x.cost*3)**2.5;game.unlockEff+=1}
-})
-let autoUpgrade = new Upgrade({
-  cost: 500,
-  name: 'Auto Play',
-  level: 0,
-  onBuy: (x) => {
-    x.el.remove();
-    game.auto = true;
-    autoUnlocked = true;
-    x.toggle = new ToggleButton({
-      name: 'Autoplay',
-      click: (x) => {
-        autoEnabled = x.on
-        if (x.on) {
-          game.autoplay()
-          game.draw()
-        }
-      }
-    })
-  }
-})
-let loopUpgrade = new Upgrade({
-  cost: 2500,
-  name: 'Move Multiplier',
-  level: 1,
-  onBuy: (x) => {x.cost+=(Math.log(x.cost*10)*10)**1.5;}
-})
-
-upgrades.push(moneyUpgrade,speedUpgrade,autoUpgrade,efficiencyUpgrade,loopUpgrade)
-
-setInterval(()=>{
-  for (let i of upgrades) {
-    i.update()
-  }
-  if (autoUnlocked) {
-    autoUpgrade.toggle.update()
-  }
-}, 500)
 
 let game = new World({
   width: 6,
@@ -472,132 +356,45 @@ if (d.getMonth() == 9) {
   game.snakeCol = 'hallow'
 }
 
-function save() {
-  localStorage.setItem('snakeIncSave',JSON.stringify({
-    money: money,
-    moneyMod: moneyMod,
-    addedSize: addedSize,
-    haveAuto: autoUnlocked,
-    game: {
-      tickDelay: game.tickDelay,
-      auto: game.auto,
-      unlockEff: game.unlockEff,
-      foodNum: game.food.length,
-      snakeSize: game.snake.size
-    },
-    upgrades: {
-      moneyCost: moneyUpgrade.cost,
-      moneyLevel: moneyUpgrade.lvl,
-      speedCost: speedUpgrade.cost,
-      speedLevel: speedUpgrade.lvl,
-      autoCost: autoUpgrade.cost,
-      autoLevel: autoUpgrade.lvl,
-      effCost: efficiencyUpgrade.cost,
-      effLevel: efficiencyUpgrade.lvl,
 
-      loopCost: loopUpgrade.cost,
-      loopLevel: loopUpgrade.lvl
-    }
-  }))
-}
-function load() {
-  let saveData = JSON.parse(localStorage.getItem('snakeIncSave'))
-  money = (saveData.money || 0)
-  moneyMod = (saveData.moneyMod || 1)
-  addedSize = (saveData.addedSize || 0)
-  autoUnlocked = (saveData.haveAuto || false)
-  if (autoUnlocked) {
-    autoUpgrade.cost = 0;
-    autoUpgrade.canBuy = true
-    autoUpgrade.buy()
-  }
-  if (addedSize >= 1) {
-    for (let i = 0; i < addedSize; i++) {
-      let dimension = Math.round(Math.random())
-      switch (dimension) {
-        case 0: game.h++; break
-        case 1: game.w++; break
-      }
-    }
-  }
 
-  if (saveData.game) {
-    // game.w = 6
-    // game.h = 6
-    game.tickDelay = (saveData.game.tickDelay || 1000)
-    game.auto = (saveData.game.auto || false)
-    game.unlockEff = (saveData.game.unlockEff || 1)
-    if (saveData.game.foodNum) {
-      for (let i = 0; i < saveData.game.foodNum - 1; i++) {
-        game.addFood()
-      }
-    }
-  }
-  // game.snake.size = (saveData.game.snakeSize || 2)
-  if (saveData.upgrades) {
-    moneyUpgrade.cost = (saveData.upgrades.moneyCost || 10)
-    moneyUpgrade.lvl = (saveData.upgrades.moneyLevel || 1)
 
-    speedUpgrade.cost = (saveData.upgrades.speedCost || 250)
-    speedUpgrade.lvl = (saveData.upgrades.speedLevel || 0)
-
-    autoUpgrade.cost = (saveData.upgrades.autoCost || 1000)
-    autoUpgrade.lvl = (saveData.upgrades.autoLevel || 0)
-
-    efficiencyUpgrade.cost = (saveData.upgrades.effCost || 250)
-    efficiencyUpgrade.lvl = (saveData.upgrades.effLevel || 1)
-
-    loopUpgrade.cost = (saveData.upgrades.loopCost || 2500)
-    loopUpgrade.lvl = (saveData.upgrades.loopLevel || 1)
-  }
-}
-function reset () {
-  // if (confirm('Are you sure you want to reset? This cannot be undone.')){
-    resetting = true
-    localStorage.removeItem('snakeIncSave')
-    // load()
-    location.reload()
-  // }
-}
-document.getElementsByClassName('reset')[0].onclick = ()=>{
-  if (resetConfirmations == 0) {
-    setTimeout(()=>{
-      resetConfirmations = 0
-      document.getElementsByClassName('reset')[0].innerHTML = 'Reset Progress'
-    },10000)
-  }
-  resetConfirmations++
-  document.getElementsByClassName('reset')[0].innerHTML = `Click ${5 - resetConfirmations} more times to reset`
-  if (resetConfirmations == 5) {
-    reset()
-  }
-}
 
 document.addEventListener('keydown',(e)=>{
-  switch (e.key.toLowerCase()) {
-    case 'w':
-    case 'arrowup':
-      if (game.snake.oldDir != 3) {
-        game.snake.dir = 0
-      }
-      break;
-    case 'a':
-    case 'arrowleft':
-      if (game.snake.oldDir != 2)
-        game.snake.dir = 1
-      break;
-    case 'd':
-    case 'arrowright':
-      if (game.snake.oldDir != 1) {
-        game.snake.dir = 2
-      }
-      break;
-    case 's':
-    case 'arrowdown':
-      if (game.snake.oldDir != 0) {
-        game.snake.dir = 3
-      }
-      break;
+  if (!game.paused) {
+
+    switch (e.key.toLowerCase()) {
+      case 'w':
+      case 'arrowup':
+        if (game.snake.oldDir != 3) {
+          game.snake.dir = 0
+        }
+        break;
+      case 'a':
+      case 'arrowleft':
+        if (game.snake.oldDir != 2)
+          game.snake.dir = 1
+        break;
+      case 'd':
+      case 'arrowright':
+        if (game.snake.oldDir != 1) {
+          game.snake.dir = 2
+        }
+        break;
+      case 's':
+      case 'arrowdown':
+        if (game.snake.oldDir != 0) {
+          game.snake.dir = 3
+        }
+        break;
+    }
+  }
+  if (e.key.toLowerCase() == 'escape' || e.key.toLowerCase() == 'p' || e.key.toLowerCase() == ' ') {
+    if (game.paused) {
+      game.paused = false
+    } else {
+      game.paused = true
+    }
   }
   game.draw()
 })
@@ -605,6 +402,7 @@ document.addEventListener('keydown',(e)=>{
 window.onload = ()=>{
   loaded = true;
   load()
+  showChangelog()
   if (game.h % 2 == 1) {
     game.h ++
   }

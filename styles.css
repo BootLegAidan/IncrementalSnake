@@ -78,12 +78,32 @@ button {
   display: block;
   margin-left: auto;
   margin-right: auto;
+  transition: background 0.1s, filter 0.1s
 }
 button.canBuy {
   background: var(--secondary);
   color: var(--primary);
 }
-.reset, .sound {
+button.canBuy:hover {
+  filter: brightness(0.9);  
+}
+#settingsButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+  z-index: 3;
+  fill: var(--secondary)
+}
+#settingsButton svg {
+  transition: transform 0.5s;
+}
+#settingsButton:hover svg {
+  transform: rotate(720deg);
+}
+.reset, .sound, .changlogBtn {
   display: inline-block;
   width: 125px;
   height: 4.5em;
@@ -97,9 +117,87 @@ button.canBuy {
 .reset {
   background: #400;
 }
+#upgradeTooltip {
+  position: absolute;
+  display: none;
+  background-color: var(--primary);
+  border: var(--secondary) 1px solid;
+  padding: 5px;
+  z-index: 2;
+}
 @keyframes slideIn {
   /* 0% {top: -5em;} */
   25% {top: 50vh}
   75% {top: 50vh}
   100% {top: -5em; }
+}
+
+
+#settingsMenu {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40vw;
+  height: 80vh;
+  background-color: var(--primary);
+  border: var(--secondary) 1px solid;
+  /* display: flex; */
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 4;
+  color: var(--secondary);
+  overflow-y: scroll;
+}
+#settingsMenu h1 {
+  border-bottom: var(--secondary) 1px solid;
+}
+#settingsBack {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.8);
+  z-index: 3;
+}
+#settings {
+  transition: top 0.5s;
+  position: absolute;
+  top: -100%;
+  left: 0;
+  z-index: 1;
+}
+.settings {
+  text-align: center;
+}
+.settings label {
+  font-size: 2em;
+}
+
+
+.box {
+    position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40vw;
+  height: 80vh;
+  background-color: var(--primary);
+  border: var(--secondary) 1px solid;
+  /* display: flex; */
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 4;
+  color: var(--secondary);
+  overflow-y: scroll;
+}
+.dark-bg {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.8);
+  z-index: 3;
+}
+
+#updateNotif-bg {
+  display: none
 }

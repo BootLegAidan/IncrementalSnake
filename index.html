@@ -1,18 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
-    <!-- Google tag (gtag.js) -->
-		<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-NW4SFNN52Y"></script>
-		<script>
-		  window.dataLayer = window.dataLayer || [];
-		  function gtag(){dataLayer.push(arguments);}
-		  gtag('js', new Date());
-
-		  gtag('config', 'G-NW4SFNN52Y');
-		</script>
     <meta charset="utf-8">
     <link rel="stylesheet" href="styles.css">
-    <title>Snake</title>
+    <link rel="stylesheet" href="sliders.css">
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+    <title>Incremental Snake</title>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
     </style>
@@ -25,16 +18,45 @@
       <div id="info">Info</div>
       <h1>Upgrades</h1>
       <div id="upgrades">
-      </div>
-      <div class="footer">
-        <button class="reset" onclick="reset()">Reset Progress</button>
-        <button class="sound" onclick="this.remove();enableSound=false">Disable Sound</button>
+        <div id="upgradeTooltip">dont judge the messiness please</div>
       </div>
     </div>
     <div id="upgradeText">Upgrade</div>
-    <script src="index.js" charset="utf-8"></script>
-    <script src="touchControls.js" charset="utf-8"></script>
-	[incrementaldb_verification: BootLegAidan]
+    <!-- Settings -->
+    <button id="settingsButton"><?xml version="1.0" encoding="UTF-8"?>
+      <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 164.87 162.37">
+        <path class="cog" d="M143.86,88.75l20.46-10.14c-2.02-11.48-1.87-10.6-3.89-22.08l-22.69-2.53c-3.07-.34-4.92-3.56-3.69-6.38l9.15-20.92c-8.93-7.5-8.24-6.92-17.18-14.41l-19.01,12.65c-2.57,1.71-6.06.44-6.93-2.52L93.65.5h-22.42l-6.44,21.91c-.87,2.96-4.36,4.23-6.93,2.52l-19.01-12.65c-8.93,7.5-8.24,6.92-17.18,14.41l9.15,20.92c1.24,2.83-.62,6.04-3.69,6.38l-22.69,2.53c-2.02,11.48-1.87,10.6-3.89,22.08l20.46,10.14c2.76,1.37,3.41,5.03,1.28,7.26l-15.75,16.53c5.83,10.1,5.38,9.32,11.21,19.42l22.19-5.38c3-.73,5.84,1.66,5.65,4.74l-1.45,22.79c10.96,3.99,10.11,3.68,21.07,7.67l13.54-18.38c1.83-2.48,5.54-2.48,7.37,0l13.54,18.38c10.96-3.99,10.11-3.68,21.07-7.67l-1.45-22.79c-.2-3.08,2.65-5.46,5.65-4.74l22.19,5.38c5.83-10.1,5.38-9.32,11.21-19.42l-15.75-16.53c-2.13-2.23-1.48-5.89,1.28-7.26ZM82.44,116.38c-19.46,0-35.24-15.78-35.24-35.24s15.78-35.24,35.24-35.24,35.24,15.78,35.24,35.24-15.78,35.24-35.24,35.24Z"/>
+      </svg>
+    </button>
+    <div class="dark-bg" id="updateNotif-bg">
+      <div class="box" id="updateNotif"></div>
+    </div>
+    <div id="settings">
+      <div id="settingsBack">
+      </div>
+      <div id="settingsMenu">
+        <h1>Settings</h1>
+        <div class="settings box">
+          <label for="volumeSlider">Volume</label>
+          <div class="slidecontainer">
+            <input class="slider" type="range" id="volumeSlider" min="0" max="100">
+          </div>
+          <br>
+          <button class="reset" onclick="reset()">Reset Progress</button>
+          <button onclick="showChangelog(true)" class="changlogBtn">Show changelog</button>
+        </div>
+        <h1>Controls</h1>
+        <div>
+          WASD/Arrow Keys = Move snake. The game also has touch controls for this, just swipe anywhere on the page<br>
+          P/Escape = Pause
+        </div>
+      </div>
+    </div>
+    <script src="changlogNotif.js" charset="utf-8" defer></script>
+    <script src="settings.js" charset="utf-8" defer></script>
+    <script src="saveManager.js" charset="utf-8" defer></script>
+    <script src="upgrades.js" charset="utf-8" defer></script>
+    <script src="index.js" charset="utf-8" defer></script>
+    <script src="touchControls.js" charset="utf-8" defer></script>
   </body>
 </html>
-
