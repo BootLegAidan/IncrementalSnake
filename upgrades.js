@@ -1,4 +1,4 @@
-let upgradeEl = document.getElementById('upgradeText')
+let prestigeEl = document.getElementById('prestigeText')
 let upgradePanel = document.getElementById('upgrades')
 let money = 0
 
@@ -22,7 +22,7 @@ class Upgrade {
   }
   update () {
     if (this.lvl >= this.maxLvl) {
-      this.el.remove()
+      this.el.style.display = 'none'
     }
     if (this.cost <= money) {
       this.canBuy = true
@@ -35,6 +35,11 @@ class Upgrade {
       ${this.name} - Lvl ${this.lvl}<br>
       Cost: ${Math.ceil(this.cost)}
     `
+    if (this.lvl <= 1 && this.cost > money) { // Hide upgrades that arent unlocked yet
+      this.el.style.display = 'none'
+    } else {
+      this.el.style.display = 'block'
+    }
   }
   buy () {
     if (this.canBuy) {
@@ -74,9 +79,9 @@ let upgrades = []
 let moneyUpgrade = new Upgrade({
   cost: 10,
   name: 'Money Multiplier',
-  level: 1,
+  level: 0,
   onBuy: (x) => {x.cost = Math.ceil(x.cost * 1.25); moneyMod++;},
-  description: "Increases the base amount of money you earn when you eat a food.<br>The equation is <code>Money Multiplier * (1.01 ^ (Snake Size + (Score / 150)))</code>"
+  description: "Increases the base amount of money you earn when you eat a food.<br>The equation is <code>Money Multiplier * (1.01 ^ (Snake Size + (Score / 150))) * (Food Potency ^ 0.3)</code>"
 })
 let speedUpgrade = new Upgrade({
   cost: 100,
@@ -89,7 +94,7 @@ let speedUpgrade = new Upgrade({
 let startingLengthUpgrade = new Upgrade({
   cost: 100,
   name: 'Starting Length',
-  level: 1,
+  level: 0,
   onBuy: (x) => {x.cost = Math.ceil(x.cost * 1.6); game.startLength += 1; if (game.snake.size < game.startLength) {game.snake.size = game.startLength}},
   description: "Increases the length the snake starts at after dying.<br>This becomes mostly irrelevant after you unlock auto play",
 })
@@ -106,7 +111,7 @@ let autoUpgrade = new Upgrade({
   name: 'Auto Play',
   level: 0,
   onBuy: (x) => {
-    x.el.remove();
+    x.el.style.display = 'none';
     game.auto = true;
     autoUnlocked = true;
     x.toggle = new ToggleButton({
@@ -125,7 +130,7 @@ let autoUpgrade = new Upgrade({
 let foodUpgrade = new Upgrade({
   cost: 500,
   name: 'Food Potency',
-  level: 1,
+  level: 0,
   onBuy: (x) => {x.cost = Math.ceil(x.cost * 1.6); game.foodEffect += 1},
   description: "Increases the amount your snake grows when you eat a food"
 })

@@ -29,6 +29,8 @@ function save() {
     },
     settings: {
       volume: settings.volume,
+      advancedStats: settings.advancedStats,
+      autoPause: settings.autoPause
     },
     version: version
   }))
@@ -105,6 +107,8 @@ function load() {
     if (saveData.settings) {
       settings.volume = (saveData.settings.volume || 20);
       settings.volumeSlider.value = settings.volume;
+      settings.advancedStats = (saveData.settings.advancedStats || false);
+      settings.autoPause = (saveData.settings.autoPause || false);
     }
     if (saveData.version) {
       lastVersion = saveData.version;

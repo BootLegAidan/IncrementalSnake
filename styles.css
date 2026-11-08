@@ -31,7 +31,7 @@ canvas {
 #info {
   color: var(--secondary)
 }
-#upgradeText {
+#prestigeText {
   position: absolute;
   width: 90vw;
   height: 1em;
@@ -48,6 +48,7 @@ canvas {
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE10+/Edge */
   user-select: none; /* Standard */
+  z-index: 3;
 }
 .slide {
   animation: slideIn 2s;

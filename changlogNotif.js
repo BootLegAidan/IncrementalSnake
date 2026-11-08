@@ -1,16 +1,16 @@
-const version = "2.0.0"
+const version = "2.1.0"
 const changelog = [
-    "Added a new upgrade: Food Potency",
-    "Added the ability to pause the game (P or Escape)",
-    "Added settings menu (top right)",
-    "Added volume slider",
-    "Added tooltips to explain upgrades (hover over the button)",
-    "Removed Move Multiplier upgrade",
-    "Size and score now persist through saves",
-    "Rebalancing (the game is still pretty unbalanced)",
-    "Added a favicon and changed the page title",
-    "Made it so the snake can grow more than once in a single frame",
-    "Cleaned up the source code a bit"
+    "Made food potency affect maoney gain",
+    "Changed back to the original sound effects",
+    "Only the basic stats are shown by default. You can re-enable them in the settings",
+    "Added a setting to automatically pause the snake game. This is off by default",
+    "Game now only saves every 10 seconds instead of every tick",
+    "Your tail now shows how much more you have to grow",
+    "Upgrades are hidden until you have enough money to buy the first upgrade",
+    "Changed how the food is colored",
+    "Fixed the prestige text showing under the game container",
+    "The snake now turns rainbow during pride month",
+    "You can no longer wrap around the edge of the screen, might bring this back as an upgrade later"
 ]
 let lastVersion = undefined
 

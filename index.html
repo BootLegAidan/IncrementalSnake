@@ -18,10 +18,10 @@
       <div id="info">Info</div>
       <h1>Upgrades</h1>
       <div id="upgrades">
-        <div id="upgradeTooltip">dont judge the messiness please</div>
+        <div id="upgradeTooltip">i forgot how messy this code is</div>
       </div>
     </div>
-    <div id="upgradeText">Upgrade</div>
+    <div id="prestigeText">Upgrade</div>
     <!-- Settings -->
     <button id="settingsButton"><?xml version="1.0" encoding="UTF-8"?>
       <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 164.87 162.37">
@@ -41,8 +41,17 @@
           <div class="slidecontainer">
             <input class="slider" type="range" id="volumeSlider" min="0" max="100">
           </div>
+          <label for="showAdvancedStats">
+            Show Advanced Stats
+            <input type="checkbox" name="advancedStats" id="showAdvancedStats">
+          </label>
+          <label for="autoPause">
+            Pause game when mouse leaves the game container
+            <input type="checkbox" name="autoPause" id="autoPause">
+          </label>
           <br>
           <button class="reset" onclick="reset()">Reset Progress</button>
+          <br>
           <button onclick="showChangelog(true)" class="changlogBtn">Show changelog</button>
         </div>
         <h1>Controls</h1>

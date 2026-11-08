@@ -5,7 +5,11 @@ let settings = {
     panel: document.getElementById('settingsMenu'),
     panelShown: false,
     volumeSlider: document.getElementById("volumeSlider"),
-    volume: 20
+    volume: 20,
+    advancedStatsBox: document.getElementById("showAdvancedStats"),
+    advancedStats: false,
+    autoPauseBox: document.getElementById("autoPause"),
+    autoPause: false
 }
 settings.button.addEventListener('click', () => {
     if (settings.panelShown) {
@@ -31,3 +35,15 @@ settings.volumeSlider.addEventListener("change", ()=>{
     settings.volume = settings.volumeSlider.value
 })
 
+// Advanced stats
+settings.advancedStats = settings.advancedStatsBox.checked
+settings.advancedStatsBox.addEventListener("change", ()=>{
+    settings.advancedStats = settings.advancedStatsBox.checked
+})
+
+// Auto pause
+settings.autoPauseBox = document.getElementById("autoPause")
+settings.autoPause = settings.autoPauseBox.checked
+settings.autoPauseBox.addEventListener("change", ()=>{
+    settings.autoPause = settings.autoPauseBox.checked
+})
