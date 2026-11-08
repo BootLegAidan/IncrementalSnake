@@ -74,28 +74,29 @@ class World {
     this.lastTick = performance.now()
     this.snake = {
       parts: [{x: 0, y: 0}],
-      dir: 3,
+      dir: "d",
       size: 2,
-      oldDir: 3,
+      oldDir: "d",
     }
     this.addFood()
   }
   autoplay () {
     let sX = this.snake.parts[0].x
     let sY = this.snake.parts[0].y
-    if (this.snake.dir == 1) {
-      this.snake.dir = 0
+
+    if (sY == this.h - 1) { // Bottom row
+      if (this.snake.dir == "r") this.snake.dir = "u"
+      if (this.snake.dir == "d") this.snake.dir = "r"
     }
-    if (this.snake.dir == 2) {
-      if (sX % 2) {
-        this.snake.dir = 0
-      } else {
-        this.snake.dir = 3
-      }
+    if (sY == 1) { // Second row
+      if (this.snake.dir == "r") this.snake.dir = "d"
+      if (this.snake.dir == "u") this.snake.dir = "r"
     }
-    if ((sY >= this.h - 1 && this.snake.dir == 3) || (sY <= 0 && this.snake.dir == 0)) {
-      this.snake.dir = 2
+    if (sX == this.w - 1) { // Last column
+      if (this.snake.dir == "r") this.snake.dir = "u"
+      if (sY == 0) this.snake.dir = "l"
     }
+    if (sX == 0 && sY == 0) this.snake.dir = "d" // Top left
   }
   tick () {
     let totalTime = performance.now()
@@ -221,16 +222,17 @@ class World {
     let x = parseInt(this.snake.parts[0].x)
     let y = parseInt(this.snake.parts[0].y)
     switch (this.snake.dir) {
-      case 0: y--; break
-      case 1: x--; break
-      case 2: x++; break
-      case 3: y++; break
+      case "u": y--; break
+      case "l": x--; break
+      case "r": x++; break
+      case "d": y++; break
     }
     this.snake.oldDir = this.snake.dir
     if (x < 0 || x >= this.w || y >= this.h || y < 0) {
       this.killSnake()
       x = 0
       y = 0
+      this.snake.dir = "d"
     }
     this.snake.parts.unshift({x: x, y: y})
     if (this.snake.parts.length > this.snake.size) {
@@ -282,9 +284,9 @@ class World {
       this.ctx.translate(this.cell/2,this.cell/2)
       this.ctx.translate(this.snake.parts[0].x * this.cell, this.snake.parts[0].y * this.cell)
       switch (this.snake.dir) {
-        case 0: this.ctx.scale(1,-1); break;
-        case 1: this.ctx.rotate(Math.PI/2); break;
-        case 2: this.ctx.rotate(-Math.PI/2); break;
+        case "u": this.ctx.scale(1,-1); break;
+        case "l": this.ctx.rotate(Math.PI/2); break;
+        case "r": this.ctx.rotate(-Math.PI/2); break;
       }
       this.ctx.fillStyle = 'white'
       this.ctx.fillRect(this.pad*0.5,this.pad*0.5,(this.cell-(this.pad*1.5))/3,(this.cell-(this.pad*1.5))/3)
@@ -323,7 +325,7 @@ class World {
   getSegmentColor(i) {
     let d = new Date()
     
-    if (d.getMonth() == 5 || true) { // June
+    if (d.getMonth() == 5) { // June
       let prideFlags = [
         ["#E57373", "#F5B75C", "#F5E98A", "#81B881", "#7895D4", "#B07AB0"], // Rainbow. the original pride colors are super harsh on the eyes
         ["#5ACDF9", "#F5A8B8", "#FFFFFF", "#F5A8B8"], // Trans
@@ -388,25 +390,25 @@ document.addEventListener('keydown',(e)=>{
     switch (e.key.toLowerCase()) {
       case 'w':
       case 'arrowup':
-        if (game.snake.oldDir != 3) {
-          game.snake.dir = 0
+        if (game.snake.oldDir != "d") {
+          game.snake.dir = "u"
         }
         break;
       case 'a':
       case 'arrowleft':
-        if (game.snake.oldDir != 2)
-          game.snake.dir = 1
+        if (game.snake.oldDir != "r")
+          game.snake.dir = "l"
         break;
       case 'd':
       case 'arrowright':
-        if (game.snake.oldDir != 1) {
-          game.snake.dir = 2
+        if (game.snake.oldDir != "l") {
+          game.snake.dir = "r"
         }
         break;
       case 's':
       case 'arrowdown':
-        if (game.snake.oldDir != 0) {
-          game.snake.dir = 3
+        if (game.snake.oldDir != "u") {
+          game.snake.dir = "d"
         }
         break;
     }
