@@ -5,3 +5,4 @@ death penalty reduction upgrade
 rewrite save system with classes
 clean up settings page
 look into more rewarding prestige mechanic
+add currency formatting (1000 = 1k, etc)

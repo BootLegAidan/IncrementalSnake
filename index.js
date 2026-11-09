@@ -14,17 +14,17 @@ function moneyModCalc() {
 }
 function updateInfo() {
   infoEl.innerHTML = `
-    Money: $${Math.floor(money)}<br>
-    Money Multiplier: x${Math.floor(10*moneyModCalc() )/10}<br>
+    Money: $${formatNumber(money)}<br>
+    Money Multiplier: x${formatNumber(moneyModCalc())}<br>
     Score: ${game.score}<br>
   `
   if (settings.advancedStats) {
     infoEl.innerHTML += `
       Snake length: ${game.snake.size} pixels<br>
       Food count: ${game.food.length}<br>
-      Food deliciousness: ${game.foodEffect}<br>
+      Food potency: ${game.foodEffect}<br>
       World size: ${game.w}x${game.h} pixels<br>
-      Unlock Efficiency: ${game.unlockEff}%<br>
+      Prestige Efficiency: ${game.unlockEff}%<br>
       ${Math.floor((1000/game.tickDelay)*100)/100} tick${Math.floor((1000/game.tickDelay)*100)/100==1?'':'s'} per second<br>
     `
   }
@@ -341,7 +341,7 @@ class World {
       return ["#FF2828", "#2DC82D"][i%2]
     }
     return `hsl(${60 + ((i % 3) * 40)},70%,70%)`;
-    return `hsl(${(360/this.snake.parts.length)*i},80%,80%)`;
+    // return `hsl(${(360/this.snake.parts.length)*i},80%,80%)`;
   }
   collide (x,y,func=(x)=>{return x},ignoreHead) {
     let collide = false
@@ -458,14 +458,3 @@ window.onload = ()=>{
 }
 
 
-function randomFromValue(value) {
-    let str = String(value);
-    let hash = 0;
-
-    for (let i = 0; i < str.length; i++) {
-        hash = (hash * 31 + str.charCodeAt(i)) | 0;
-    }
-
-    // Convert hash into a float between 0 and 1
-    return (hash >>> 0) / 4294967296;
-}

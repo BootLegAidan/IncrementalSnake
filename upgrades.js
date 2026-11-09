@@ -30,9 +30,9 @@ class Upgrade {
     }
     this.el.innerHTML = `
     ${this.name} - Lvl ${this.lvl}<br>
-    Cost: ${Math.ceil(this.cost)}
+    Cost: ${formatNumber(this.cost)}
     `
-    if (this.lvl <= 1 && this.cost > money) { // Hide upgrades that arent unlocked yet
+    if (this.lvl < 1 && this.cost > money) { // Hide upgrades that arent unlocked yet
       this.el.style.display = 'none'
     } else {
       this.el.style.display = 'block'
@@ -81,13 +81,13 @@ let moneyUpgrade = new Upgrade({
   name: 'Money Multiplier',
   level: 0,
   onBuy: (x) => {x.cost = Math.ceil(x.cost * 1.25); moneyMod++;},
-  description: "Increases the base amount of money you earn when you eat a food.<br>The equation is <code>Money Multiplier * (1.01 ^ (Snake Size + (Score / 150))) * (Food Potency ^ 0.3)</code>"
+  description: "Increases the base amount of money you earn when you eat a food.<br>The equation is <br><code>Money Multiplier * (1.01 ^ (Snake Size + (Score / 150))) * (Food Potency ^ 0.3)</code>"
 })
 let speedUpgrade = new Upgrade({
   cost: 100,
   name: 'Speed Up',
-  level: 1,
-  maxLvl: 100,
+  level: 0,
+  maxLvl: 35,
   onBuy: (x) => {x.cost = Math.ceil(x.cost * 1.4); game.tickDelay *= 0.85;},
   description: "Increases the speed of the game by ~15% (multiplicative)"
 })
@@ -101,10 +101,10 @@ let startingLengthUpgrade = new Upgrade({
 let efficiencyUpgrade = new Upgrade({
   cost: 250,
   name: 'Prestige Efficiency',
-  level: 1,
+  level: 0,
   maxLvl: 15,
-  onBuy: (x) => {x.cost = Math.ceil(x.cost * 1.5); game.unlockEff += 5},
-  description: "When you prestige (food++ or size++),<br>you get to keep x% of your current snakes size"
+  onBuy: (x) => {x.cost = Math.ceil(x.cost * 1.8); game.unlockEff += 5},
+  description: "When you prestige (food++ or size++),<br>you get to keep <code>(Efficiency * 5)%</code> of your current snakes size and food"
 })
 let autoUpgrade = new Upgrade({
   cost: 500,
