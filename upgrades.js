@@ -21,9 +21,6 @@ class Upgrade {
     this.update()
   }
   update () {
-    if (this.lvl >= this.maxLvl) {
-      this.el.style.display = 'none'
-    }
     if (this.cost <= money) {
       this.canBuy = true
       this.el.classList.add('canBuy')
@@ -32,13 +29,16 @@ class Upgrade {
       this.el.classList.remove('canBuy')
     }
     this.el.innerHTML = `
-      ${this.name} - Lvl ${this.lvl}<br>
-      Cost: ${Math.ceil(this.cost)}
+    ${this.name} - Lvl ${this.lvl}<br>
+    Cost: ${Math.ceil(this.cost)}
     `
     if (this.lvl <= 1 && this.cost > money) { // Hide upgrades that arent unlocked yet
       this.el.style.display = 'none'
     } else {
       this.el.style.display = 'block'
+    }
+    if (this.lvl >= this.maxLvl) {
+      this.el.style.display = 'none'
     }
   }
   buy () {
