@@ -1,4 +1,4 @@
-const version = "2.1.0"
+const version = "2.1.3"
 const changelog = [
     "Made food potency affect maoney gain",
     "Changed back to the original sound effects",
@@ -10,7 +10,8 @@ const changelog = [
     "Changed how the food is colored",
     "Fixed the prestige text showing under the game container",
     "The snake now turns rainbow during pride month",
-    "You can no longer wrap around the edge of the screen, might bring this back as an upgrade later"
+    "You can no longer wrap around the edge of the screen, might bring this back as an upgrade later",
+    "Made the layout a little bit more dynamic"
 ]
 let lastVersion = undefined
 

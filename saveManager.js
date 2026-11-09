@@ -58,11 +58,8 @@ function load() {
     }
     if (addedSize >= 1) {
       for (let i = 0; i < addedSize; i++) {
-        let dimension = Math.round(Math.random())
-        switch (dimension) {
-          case 0: game.h++; break
-          case 1: game.w++; break
-        }
+        game.h++
+        game.w++
       }
     }
   

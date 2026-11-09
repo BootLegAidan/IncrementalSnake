@@ -88,8 +88,8 @@ let speedUpgrade = new Upgrade({
   name: 'Speed Up',
   level: 1,
   maxLvl: 100,
-  onBuy: (x) => {x.cost = Math.ceil(x.cost * 1.7); game.tickDelay *= 0.9;},
-  description: "Increases the speed of the game by ~10% (multiplicative)"
+  onBuy: (x) => {x.cost = Math.ceil(x.cost * 1.4); game.tickDelay *= 0.85;},
+  description: "Increases the speed of the game by ~15% (multiplicative)"
 })
 let startingLengthUpgrade = new Upgrade({
   cost: 100,
@@ -100,16 +100,17 @@ let startingLengthUpgrade = new Upgrade({
 })
 let efficiencyUpgrade = new Upgrade({
   cost: 250,
-  name: 'Unlock Efficiency',
+  name: 'Prestige Efficiency',
   level: 1,
-  maxLvl: 90,
-  onBuy: (x) => {x.cost = Math.ceil(x.cost * 1.5); game.unlockEff += 1},
+  maxLvl: 15,
+  onBuy: (x) => {x.cost = Math.ceil(x.cost * 1.5); game.unlockEff += 5},
   description: "When you prestige (food++ or size++),<br>you get to keep x% of your current snakes size"
 })
 let autoUpgrade = new Upgrade({
   cost: 500,
   name: 'Auto Play',
   level: 0,
+  maxLevel: 1,
   onBuy: (x) => {
     x.el.style.display = 'none';
     game.auto = true;
@@ -152,8 +153,8 @@ upgradePanel.addEventListener("mousemove", (e) => {
     let elRect = upgradePanel.getBoundingClientRect();
     let scrollY = document.querySelectorAll(".sidePanel")[0].scrollTop
     // Calculate the offset for the tooltip to follow the cursor horizontally and vertically
-    let offsetX = e.clientX - elRect.left + 20;
-    let offsetY = e.clientY - (elRect.top*0) + (scrollY);
+    let offsetX = e.clientX - 150;
+    let offsetY = e.clientY + window.pageYOffset + 20;
 
     // Update the position of the tooltip
     upgradeTooltip.style.left = offsetX + "px";

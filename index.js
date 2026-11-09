@@ -134,10 +134,8 @@ class World {
         }
         if (this.food.length >= (this.w,this.h)/2) {
           money += (this.w * this.h) * (moneyMod * 0.5)
-          switch (Math.round(Math.random())) {
-            case 0 : this.w +=2; break;
-            case 1: this.h +=2; break;
-          }
+          this.w +=2
+          this.h +=2
           addedSize++
           this.food.length = Math.ceil(this.food.length*(this.unlockEff/100))
           this.resize()
@@ -172,11 +170,11 @@ class World {
     }
     this.cell = this.c.width / this.w
     this.c.height = this.cell * this.h
-    if (parseInt(getComputedStyle(this.c).height) > window.innerHeight) {
-      this.w += 2;
-      this.h -= 2;
-      this.resize()
-    }
+    // if (parseInt(getComputedStyle(this.c).height) > window.innerHeight) {
+    //   this.w += 2;
+    //   this.h -= 2;
+    //   this.resize()
+    // }
   }
   draw () {
     // for (let x = 0; x < this.w; x++){for (let y = 0; y < this.h; y++){this.ctx.fillStyle = 'white';this.ctx.fillRect(x * this.cell,y * this.cell,1,1)}} // Grid for debugging

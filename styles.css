@@ -10,23 +10,25 @@ body {
   background: var(--primary);
   display: flex;
   margin: var(--margin);
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 canvas {
-  box-sizing: border-box;
-  border: var(--secondary) 1px solid;
-  /* height: calc(100vh - (var(--margin) * 2)); */
-  width: 100%;
-  display: block;
+    box-sizing: border-box;
+    border: var(--secondary) 1px solid;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: 100%;
+    display: block;
 }
 #snakeContainer {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 45vw;
+  flex: 1 1 500px;
+  min-width: 0;
   height: calc(100vh - (var(--margin) * 2));
-  position: fixed;
-  z-index: 1
+  z-index: 1;
 }
 #info {
   color: var(--secondary)
@@ -55,13 +57,13 @@ canvas {
 }
 .sidePanel {
   color: var(--secondary);
-  width: 45vw;
+  flex: 1 1 250px;
+  min-width: 0;
   padding: 15px;
   padding-top: 20px;
-  right: 0;
-  position: absolute;
   height: calc(100vh - 15px);
-  overflow-y: scroll;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 h1, #upgrades {
   text-align: center;
@@ -201,4 +203,23 @@ button.canBuy:hover {
 
 #updateNotif-bg {
   display: none
+}
+
+/* Makes the main game more fluid */
+#mainContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+    width: 100%;
+}
+
+#snakeContainer {
+    flex: 1 1 500px;
+    min-width: 0;
+}
+
+.sidePanel {
+    flex: 1 1 250px;
+    min-width: 0;
 }
