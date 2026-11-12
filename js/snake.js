@@ -7,6 +7,7 @@ class World {
     this.snakeCol = options.snakeColor || "green";
     this.tickDelay = options.tickDelay || 1000;
     this.auto = options.auto || false;
+    this.autoLevel = 0
     this.eyes = options.drawEyes || true;
     this.unlockEff = options.efficiency || options.unlockEff || 1;
     this.foodEffect = options.foodEffect || 1;
@@ -42,22 +43,26 @@ class World {
     let sX = this.snake.parts[0].x;
     let sY = this.snake.parts[0].y;
 
-    if (sY == this.h - 1) {
-      // Bottom row
-      if (this.snake.dir == "r") this.snake.dir = "u";
-      if (this.snake.dir == "d") this.snake.dir = "r";
+    switch (autoUpgrade.lvl) {
+        case 1:
+            if (sY == this.h - 1) {
+              // Bottom row
+              if (this.snake.dir == "r") this.snake.dir = "u";
+              if (this.snake.dir == "d") this.snake.dir = "r";
+            }
+            if (sY == 1) {
+              // Second row
+              if (this.snake.dir == "r") this.snake.dir = "d";
+              if (this.snake.dir == "u") this.snake.dir = "r";
+            }
+            if (sX == this.w - 1) {
+              // Last column
+              if (this.snake.dir == "r") this.snake.dir = "u";
+              if (sY == 0) this.snake.dir = "l";
+            }
+            if (sX == 0 && sY == 0) this.snake.dir = "d"; // Top left
+            break
     }
-    if (sY == 1) {
-      // Second row
-      if (this.snake.dir == "r") this.snake.dir = "d";
-      if (this.snake.dir == "u") this.snake.dir = "r";
-    }
-    if (sX == this.w - 1) {
-      // Last column
-      if (this.snake.dir == "r") this.snake.dir = "u";
-      if (sY == 0) this.snake.dir = "l";
-    }
-    if (sX == 0 && sY == 0) this.snake.dir = "d"; // Top left
   }
   tick() {
     let totalTime = performance.now();
@@ -90,36 +95,7 @@ class World {
           }
         }
       }
-
-      let prestiged = false;
-      if (this.snake.size >= (this.w - 2) * (this.h - 2)) {
-        this.snake.size = Math.max(
-          Math.ceil(this.snake.size * (this.unlockEff / 100)),
-          this.startLength,
-        );
-        this.snake.parts.length = Math.max(
-          Math.ceil(this.snake.parts.length * (this.unlockEff / 100)),
-          this.startLength,
-        );
-        this.addFood();
-        prestigeEl.innerHTML = "Food++";
-        prestiged = true;
-      }
-      if (this.food.length >= (this.w, this.h) / 2) {
-        money += this.w * this.h * (moneyMod * 0.5);
-        this.w += 2;
-        this.h += 2;
-        addedSize++;
-        this.food.length = Math.ceil(this.food.length * (this.unlockEff / 100));
-        this.resize();
-        prestigeEl.innerHTML = "Size++";
-        prestiged = true;
-      }
-      if (prestiged) {
-        playSound("unlock");
-        prestigeEl.classList.remove("slide");
-        prestigeEl.classList.add("slide");
-      }
+      this.handlePrestige()
     }
     this.draw();
     updateInfo();
@@ -128,6 +104,39 @@ class World {
     setTimeout(() => {
       fakeThis.tick();
     }, this.tickDelay - totalTime);
+  }
+  handlePrestige() {
+    let prestiged = false;
+    if (this.snake.size >= (this.w - 2) * (this.h - 2)) {
+      this.snake.size = Math.max(
+        Math.ceil(this.snake.size * (this.unlockEff / 100)),
+        this.startLength,
+      );
+      this.snake.parts.length = Math.max(
+        Math.ceil(this.snake.parts.length * (this.unlockEff / 100)),
+        this.startLength,
+      );
+      this.addFood();
+      prestigeEl.innerHTML = "Food+";
+      prestiged = true;
+    }
+    if (this.food.length >= (this.w, this.h) / 2) {
+      money += this.w * this.h * (moneyMod * 0.5);
+      this.w += 2;
+      this.h += 2;
+      addedSize++;
+      this.food.length = Math.ceil(this.food.length * (this.unlockEff / 100));
+      this.resize();
+      prestigeEl.innerHTML = "Size+";
+      prestiged = true;
+    }
+    if (prestiged) {
+      playSound("unlock");
+      prestigeEl.classList.remove("slide");
+      setTimeout(
+        ()=>prestigeEl.classList.add("slide"), 1
+      )
+    }
   }
   resize() {
     if (this.w > this.c.width / 100) {

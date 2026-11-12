@@ -15,7 +15,7 @@ function moneyModCalc() {
 function updateInfo() {
   infoEl.innerHTML = `
     Money: $${formatNumber(money)}<br>
-    Money Multiplier: x${formatNumber(moneyModCalc())}<br>
+    Money per food: x${formatNumber(moneyModCalc())}<br>
     Score: ${game.score}<br>
   `
   if (settings.advancedStats) {
@@ -33,26 +33,20 @@ function updateInfo() {
     moneyMod = 1
   }
 }
-function playSound(name){
-  let snd = new Audio("Sounds/"+name+".mp3"); // buffers automatically when created
-  snd.volume = settings.volume/100
-  snd.play();
-}
 
 let game = new World({ // Create the snake game
   width: 6,
   height: 6,
   show: true,
   auto: false,
-  tickDelay: 1000,
-  upgrades: true
+  tickDelay: 1000
 })
 game.tick()
 
 document.addEventListener('keydown',(e)=>{
+  key = e.key.toLowerCase()
   if (!game.paused) {
-
-    switch (e.key.toLowerCase()) {
+    switch (key) { // Handle arrow keys and wasd
       case 'w':
       case 'arrowup':
         if (game.snake.oldDir != "d") {
@@ -78,12 +72,8 @@ document.addEventListener('keydown',(e)=>{
         break;
     }
   }
-  if (e.key.toLowerCase() == 'escape' || e.key.toLowerCase() == 'p' || e.key.toLowerCase() == ' ') {
-    if (game.paused) {
-      game.paused = false
-    } else {
-      game.paused = true
-    }
+  if (["escape", "p", " "].includes(key)) { // Pausing
+    game.paused = !game.paused
   }
   game.draw()
 })

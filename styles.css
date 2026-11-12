@@ -179,7 +179,7 @@ button.canBuy:hover {
 
 
 .box {
-    position: absolute;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -203,7 +203,10 @@ button.canBuy:hover {
 }
 
 #updateNotif-bg {
-  display: none
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 /* Makes the main game more fluid */

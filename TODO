@@ -10,6 +10,5 @@ add different levels of autoplay
     random movement with basic self preservation
     Current one (sweep across entire board)
     smart algo taht targets closest food
-    super good algo??? 
-further move things into their own files
+    super good algo???
 make it so on a turn where the snake eats a food, the tail doesnt move spots

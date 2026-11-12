@@ -32,7 +32,7 @@ function save() {
       advancedStats: settings.advancedStats,
       autoPause: settings.autoPause
     },
-    version: version
+    version: changelogs[changelogs.length-1].version
   }))
 //   console.log("Saved Succesfully");
   
@@ -82,7 +82,7 @@ function load() {
     }
     if (saveData.upgrades) {
       moneyUpgrade.cost = (saveData.upgrades.moneyCost || 10)
-      moneyUpgrade.lvl = (saveData.upgrades.moneyLevel || 1)
+      moneyUpgrade.lvl = (saveData.upgrades.moneyLevel || 0)
   
       speedUpgrade.cost = (saveData.upgrades.speedCost || 250)
       speedUpgrade.lvl = (saveData.upgrades.speedLevel || 0)
@@ -91,13 +91,13 @@ function load() {
       autoUpgrade.lvl = (saveData.upgrades.autoLevel || 0)
   
       efficiencyUpgrade.cost = (saveData.upgrades.effCost || 250)
-      efficiencyUpgrade.lvl = (saveData.upgrades.effLevel || 1)
+      efficiencyUpgrade.lvl = (saveData.upgrades.effLevel || 0)
   
       foodUpgrade.cost = (saveData.upgrades.foodCost || 500)
-      foodUpgrade.lvl = (saveData.upgrades.foodLvl || 1)
+      foodUpgrade.lvl = (saveData.upgrades.foodLvl || 0)
   
       startingLengthUpgrade.cost = (saveData.upgrades.startLengthCost || 100)
-      startingLengthUpgrade.lvl = (saveData.upgrades.startLengthLvl || 1)
+      startingLengthUpgrade.lvl = (saveData.upgrades.startLengthLvl || 0)
     } else {
       console.log("Save data for upgrades couldn't be found");
     }

@@ -115,18 +115,8 @@ let autoUpgrade = new Upgrade({
     x.el.style.display = 'none';
     game.auto = true;
     autoUnlocked = true;
-    x.toggle = new ToggleButton({
-      name: 'Autoplay',
-      click: (x) => {
-        autoEnabled = x.on
-        if (x.on) {
-          game.autoplay()
-          game.draw()
-        }
-      }
-    })
   },
-  description: "Plays the game for you,<br>can be toggled on or off once bought"
+  description: "Plays the game for you,<br>can be toggled on or off in the settings"
 })
 let foodUpgrade = new Upgrade({
   cost: 500,
@@ -141,9 +131,6 @@ upgrades.push(moneyUpgrade,speedUpgrade,startingLengthUpgrade,autoUpgrade,effici
 setInterval(()=>{
   for (let i of upgrades) {
     i.update()
-  }
-  if (autoUnlocked) {
-    autoUpgrade.toggle.update()
   }
 }, 500)
 

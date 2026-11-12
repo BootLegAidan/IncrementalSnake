@@ -9,7 +9,9 @@ let settings = {
     advancedStatsBox: document.getElementById("showAdvancedStats"),
     advancedStats: false,
     autoPauseBox: document.getElementById("autoPause"),
-    autoPause: false
+    autoPause: false,
+    autoplayBox: document.getElementById("autoplay"),
+    autoplay: false
 }
 settings.button.addEventListener('click', () => {
     if (settings.panelShown) {
@@ -46,4 +48,11 @@ settings.autoPauseBox = document.getElementById("autoPause")
 settings.autoPause = settings.autoPauseBox.checked
 settings.autoPauseBox.addEventListener("change", ()=>{
     settings.autoPause = settings.autoPauseBox.checked
+})
+
+// Auto play
+settings.autoplayBox = document.getElementById("autoplay")
+settings.autoplay = settings.autoplayBox.checked
+settings.autoplayBox.addEventListener("change", ()=>{
+    autoEnabled = settings.autoplayBox.checked
 })

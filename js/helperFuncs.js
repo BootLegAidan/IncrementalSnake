@@ -10,17 +10,22 @@ function randomFromValue(value) {
     return (hash >>> 0) / 4294967296;
 }
 
-function formatNumber(x) {
-    const formatLetters = [
-        [1000000000000, "t"],
-        [1000000000, "b"],
-        [1000000, "m"],
-        [1000, "k"],
-    ];
-    for (const [num, letter] of formatLetters) {
-        if (x >= num) {
-            return `${(x / num).toFixed(2)}${letter}`;
-        }
+function formatNumber(x, m=2, n=0) {
+    const letters = ["", "k", "m", "b", "t"]
+    let places = 0
+    while (x >= 1000) {
+        places ++
+        x /= 1000
     }
-    return x.toFixed(2);
+
+    if (places == 0) {
+        return x = x.toFixed(n)
+    }
+    return x.toFixed(m) + letters[places];
+}
+
+function playSound(name){
+  let snd = new Audio("Sounds/"+name+".mp3"); // buffers automatically when created
+  snd.volume = settings.volume/100
+  snd.play();
 }
