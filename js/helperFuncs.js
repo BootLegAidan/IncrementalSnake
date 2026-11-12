@@ -12,6 +12,8 @@ function randomFromValue(value) {
 
 function formatNumber(x) {
     const formatLetters = [
+        [1000000000000, "t"],
+        [1000000000, "b"],
         [1000000, "m"],
         [1000, "k"],
     ];

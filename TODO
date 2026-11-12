@@ -5,4 +5,11 @@ death penalty reduction upgrade
 rewrite save system with classes
 clean up settings page
 look into more rewarding prestige mechanic
-add currency formatting (1000 = 1k, etc)
+move autoplay toggle to the settings menu
+add different levels of autoplay
+    random movement with basic self preservation
+    Current one (sweep across entire board)
+    smart algo taht targets closest food
+    super good algo??? 
+further move things into their own files
+make it so on a turn where the snake eats a food, the tail doesnt move spots
