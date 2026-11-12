@@ -50,11 +50,7 @@ function load() {
       autoUpgrade.cost = 0;
       autoUpgrade.canBuy = true
       autoUpgrade.buy()
-  
-      // Turn on auto and update the button
       autoEnabled = true
-      autoUpgrade.toggle.on = true
-      autoUpgrade.toggle.update()
     }
     if (addedSize >= 1) {
       for (let i = 0; i < addedSize; i++) {

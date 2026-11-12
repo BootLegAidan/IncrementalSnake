@@ -8,6 +8,7 @@ let autoEnabled = false
 let resetConfirmations = 0
 let resetting = false
 let timeSinceLastSave = 0
+let loadTime = 0
 
 function moneyModCalc() {
   return moneyMod * (1.01**game.snake.size+(game.score/150)) * (game.foodEffect ** 0.3)
@@ -94,6 +95,7 @@ gameCont.addEventListener("mouseenter", ()=>{
 
 window.onload = ()=>{
   loaded = true;
+  loadTime = performance.now()
   load()
   showChangelog()
   if (game.h % 2 == 1) {

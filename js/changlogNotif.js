@@ -27,6 +27,13 @@ const changelogs = [
             "Made it so the changelog can show multiple versions",
             "Fixed an issue that made it so the prestige text would only show up once",
         ]
+    },
+    {
+        "version": "2.2.1",
+        "notes": [
+            "Fixed an issue that would cause the game to not load your save",
+            "The snake is now a random color",
+        ]
     }
 ]
 let lastVersion = undefined

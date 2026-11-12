@@ -365,7 +365,7 @@ class World {
         ["#5ACDF9", "#F5A8B8", "#FFFFFF", "#F5A8B8"], // Trans
       ];
 
-      let varient = randomFromValue(d.getDay() + "helloo");
+      let varient = randomFromValue(loadTime + "pride");
       console.log(varient);
 
       return prideFlags[Math.floor(varient * prideFlags.length)][
@@ -378,7 +378,9 @@ class World {
     if (d.getMonth() == 11) { // December
       return ["#FF2828", "#2DC82D"][i % 2];
     }
-    return `hsl(${60 + (i % 3) * 40},70%,70%)`;
+
+    let colorOffset = randomFromValue(loadTime + "helloo") * 360;
+    return `hsl(${colorOffset + (i * 180)},70%,70%)`;
     // return `hsl(${(360/this.snake.parts.length)*i},80%,80%)`;
   }
   collide(x, y, func = (x) => {return x;}, ignoreHead) {

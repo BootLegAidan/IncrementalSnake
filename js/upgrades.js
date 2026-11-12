@@ -115,6 +115,7 @@ let autoUpgrade = new Upgrade({
     x.el.style.display = 'none';
     game.auto = true;
     autoUnlocked = true;
+    autoEnabled = true;
   },
   description: "Plays the game for you,<br>can be toggled on or off in the settings"
 })
