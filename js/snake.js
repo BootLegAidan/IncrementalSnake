@@ -5,12 +5,9 @@ class World {
     this.show = options.show || true;
     this.foodCol = options.foodColor || "random";
     this.snakeCol = options.snakeColor || "green";
-    this.tickDelay = options.tickDelay || 1000;
     this.auto = options.auto || false;
     this.autoLevel = 0
     this.eyes = options.drawEyes || true;
-    this.unlockEff = options.efficiency || options.unlockEff || 1;
-    this.foodEffect = options.foodEffect || 1;
     this.startLength = options.startLength || 2;
     this.paused = false;
 
@@ -75,7 +72,7 @@ class World {
       for (let i of this.food) {
         // Check for eaten food
         if (this.collide(i.x, i.y)) {
-          this.snake.size += this.foodEffect;
+          this.snake.size += foodUpgrade.lvl + 1;
           this.score++;
           money += moneyModCalc();
           playSound("eat");
@@ -103,17 +100,17 @@ class World {
     let fakeThis = this;
     setTimeout(() => {
       fakeThis.tick();
-    }, this.tickDelay - totalTime);
+    }, getTickDelay() - totalTime);
   }
   handlePrestige() {
     let prestiged = false;
     if (this.snake.size >= (this.w - 2) * (this.h - 2)) {
       this.snake.size = Math.max(
-        Math.ceil(this.snake.size * (this.unlockEff / 100)),
+        Math.ceil(this.snake.size * (getUnlockEfficiency() / 100)),
         this.startLength,
       );
       this.snake.parts.length = Math.max(
-        Math.ceil(this.snake.parts.length * (this.unlockEff / 100)),
+        Math.ceil(this.snake.parts.length * (getUnlockEfficiency() / 100)),
         this.startLength,
       );
       this.addFood();
@@ -121,11 +118,11 @@ class World {
       prestiged = true;
     }
     if (this.food.length >= (this.w, this.h) / 2) {
-      money += this.w * this.h * (moneyMod * 0.5);
+      money += this.w * this.h * (moneyUpgrade.lvl * 0.5);
       this.w += 2;
       this.h += 2;
       addedSize++;
-      this.food.length = Math.ceil(this.food.length * (this.unlockEff / 100));
+      this.food.length = Math.ceil(this.food.length * (getUnlockEfficiency() / 100));
       this.resize();
       prestigeEl.innerHTML = "Size+";
       prestiged = true;
@@ -380,7 +377,7 @@ class World {
     }
 
     let colorOffset = randomFromValue(loadTime + "helloo") * 360;
-    return `hsl(${colorOffset + (i * 180)},70%,70%)`;
+    return `hsl(${colorOffset + ((i % 4) * 30)},70%,70%)`;
     // return `hsl(${(360/this.snake.parts.length)*i},80%,80%)`;
   }
   collide(x, y, func = (x) => {return x;}, ignoreHead) {

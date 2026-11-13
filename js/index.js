@@ -1,6 +1,5 @@
 let infoEl = document.getElementById('info');
 let gameCont = document.getElementById('snakeContainer')
-let moneyMod = 1
 let addedSize = 0
 let loaded = false
 let autoUnlocked = false
@@ -11,7 +10,7 @@ let timeSinceLastSave = 0
 let loadTime = 0
 
 function moneyModCalc() {
-  return moneyMod * (1.01**game.snake.size+(game.score/150)) * (game.foodEffect ** 0.3)
+  return (moneyUpgrade.lvl + 1) * (1.01**game.snake.size+(game.score/150)) * Math.max(1, foodUpgrade.lvl ** 0.3)
 }
 function updateInfo() {
   infoEl.innerHTML = `
@@ -23,15 +22,11 @@ function updateInfo() {
     infoEl.innerHTML += `
       Snake length: ${game.snake.size} pixels<br>
       Food count: ${game.food.length}<br>
-      Food potency: ${game.foodEffect}<br>
+      Food potency: ${foodUpgrade.lvl}<br>
       World size: ${game.w}x${game.h} pixels<br>
-      Prestige Efficiency: ${game.unlockEff}%<br>
-      ${Math.floor((1000/game.tickDelay)*100)/100} tick${Math.floor((1000/game.tickDelay)*100)/100==1?'':'s'} per second<br>
+      Prestige Efficiency: ${getUnlockEfficiency()}%<br>
+      ${Math.floor((1000/getTickDelay())*100)/100} tick${Math.floor((1000/getTickDelay())*100)/100==1?'':'s'} per second<br>
     `
-  }
-
-  if (moneyMod < 1) {
-    moneyMod = 1
   }
 }
 
@@ -39,8 +34,7 @@ let game = new World({ // Create the snake game
   width: 6,
   height: 6,
   show: true,
-  auto: false,
-  tickDelay: 1000
+  auto: false
 })
 game.tick()
 

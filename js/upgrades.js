@@ -54,58 +54,56 @@ class Upgrade {
     }
   }
 }
-class ToggleButton {  
-  constructor (options) {
-    this.name = options.name // String - What text is on the button
-    this.clickFun = (options.function || options.fun || options.click || options.clickFun) // Function - What to do when the button is clicked
-
-    this.on = false
-    this.el = document.createElement('button')
-
-    upgradePanel.append(this.el)
-    let fakeThis = this
-    this.el.onclick = () => {
-      this.on = !this.on;
-      this.clickFun(fakeThis)
-      this.update()
-    }
-  }
-  update () {
-    this.el.innerHTML = `${this.name} - ${this.on ? 'On' : 'Off'}`
-    this.el.style.background = (this.on ? '#040' : '#400')
-  }
-}
 let upgrades = []
+
+
 let moneyUpgrade = new Upgrade({
   cost: 10,
   name: 'Money Multiplier',
   level: 0,
-  onBuy: (x) => {x.cost = Math.ceil(x.cost * 1.25); moneyMod++;},
+  onBuy: (x) => {x.cost = Math.ceil(x.cost * 1.25)},
   description: "Increases the base amount of money you earn when you eat a food.<br>The equation is <br><code>Money Multiplier * (1.01 ^ (Snake Size + (Score / 150))) * (Food Potency ^ 0.3)</code>"
 })
+
+
 let speedUpgrade = new Upgrade({
   cost: 100,
   name: 'Speed Up',
   level: 0,
-  maxLvl: 35,
-  onBuy: (x) => {x.cost = Math.ceil(x.cost * 1.4); game.tickDelay *= 0.85;},
+  maxLvl: 40,
+  onBuy: (x) => {x.cost = Math.ceil(x.cost * 1.4)},
   description: "Increases the speed of the game by ~15% (multiplicative)"
 })
+function getTickDelay() {
+    return 1000 * (0.85 ** speedUpgrade.lvl)
+}
+
+
 let startingLengthUpgrade = new Upgrade({
   cost: 100,
   name: 'Starting Length',
   level: 0,
-  onBuy: (x) => {x.cost = Math.ceil(x.cost * 1.6); game.startLength += 1; if (game.snake.size < game.startLength) {game.snake.size = game.startLength}},
+  onBuy: (x) => {x.cost = Math.ceil(x.cost * 1.6); game.snake.size = Math.max(game.snake.size = getStartingLength())},
   description: "Increases the length the snake starts at after dying.<br>This becomes mostly irrelevant after you unlock auto play",
 })
+function getStartingLength() {
+  return 3 + startingLengthUpgrade.lvl
+}
+
+
 let efficiencyUpgrade = new Upgrade({
   cost: 250,
   name: 'Prestige Efficiency',
   level: 0,
-  maxLvl: 15,
-  onBuy: (x) => {x.cost = Math.ceil(x.cost * 1.8); game.unlockEff += 5},
-  description: "When you prestige (food++ or size++),<br>you get to keep <code>(Efficiency * 5)%</code> of your current snakes size and food"
+  maxLvl: 30,
+  onBuy: (x) => {x.cost = Math.ceil(x.cost * 2)},
+  description: "When you prestige (food++ or size++),<br>you get to keep <code>(Efficiency * 2.5)%</code> of your current snakes size and food"
 })
+function getUnlockEfficiency() {
+  return Math.max(1, efficiencyUpgrade.lvl * 2.5)
+}
+
+
 let autoUpgrade = new Upgrade({
   cost: 500,
   name: 'Auto Play',
@@ -119,11 +117,13 @@ let autoUpgrade = new Upgrade({
   },
   description: "Plays the game for you,<br>can be toggled on or off in the settings"
 })
+
+
 let foodUpgrade = new Upgrade({
   cost: 500,
   name: 'Food Potency',
   level: 0,
-  onBuy: (x) => {x.cost = Math.ceil(x.cost * 1.6); game.foodEffect += 1},
+  onBuy: (x) => {x.cost = Math.ceil(x.cost * 1.6)},
   description: "Increases the amount your snake grows when you eat a food"
 })
 

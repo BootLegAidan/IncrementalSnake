@@ -2,7 +2,6 @@ speed control
 upgrade to reduce how long your snake needs to be to prestige
 manual prestige
 death penalty reduction upgrade
-rewrite save system with classes
 clean up settings page
 look into more rewarding prestige mechanic
 move autoplay toggle to the settings menu
@@ -12,3 +11,5 @@ add different levels of autoplay
     smart algo taht targets closest food
     super good algo???
 make it so on a turn where the snake eats a food, the tail doesnt move spots
+merge game values and upgrade.lvl values
+move the upgrades into an object

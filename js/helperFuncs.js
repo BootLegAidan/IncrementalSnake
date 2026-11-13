@@ -21,7 +21,10 @@ function formatNumber(x, m=2, n=0) {
     if (places == 0) {
         return x = x.toFixed(n)
     }
-    return x.toFixed(m) + letters[places];
+    if (letters[places]) {
+        return x.toFixed(m) + letters[places];
+    }
+    return x.toFixed(m) + "e" + ([places] * 3);
 }
 
 function playSound(name){

@@ -1,17 +1,13 @@
 function save() {
   localStorage.setItem('snakeIncSave',JSON.stringify({
     money: money,
-    moneyMod: moneyMod,
     addedSize: addedSize,
     haveAuto: autoUnlocked,
     game: {
-      tickDelay: game.tickDelay,
       auto: game.auto,
-      unlockEff: game.unlockEff,
       foodNum: game.food.length,
       snakeSize: game.snake.size,
       score: game.score,
-      foodEffect: game.foodEffect
     },
     upgrades: {
       moneyCost: moneyUpgrade.cost,
@@ -34,87 +30,80 @@ function save() {
     },
     version: changelogs[changelogs.length-1].version
   }))
-//   console.log("Saved Succesfully");
-  
+}
+
+function sanityCheck(item, defaultVal) {
+  if (typeof item == "undefined" || isNaN(item)) {
+    return defaultVal
+  }
+  return item
 }
 
 function load() {
   let saveData = JSON.parse(localStorage.getItem('snakeIncSave'))
-  try {
-
-    money = (saveData.money || 0)
-    moneyMod = (saveData.moneyMod || 1)
-    addedSize = (saveData.addedSize || 0)
-    autoUnlocked = (saveData.haveAuto || false)
-    if (autoUnlocked) {
-      autoUpgrade.cost = 0;
-      autoUpgrade.canBuy = true
-      autoUpgrade.buy()
-      autoEnabled = true
-    }
-    if (addedSize >= 1) {
-      for (let i = 0; i < addedSize; i++) {
-        game.h++
-        game.w++
-      }
-    }
-  
+  // try {
+    let sd = saveData
+    money = sanityCheck(sd?.money, 0)
+    addedSize = sanityCheck(sd?.addedSize, 0)
+    for (let i = 0; i < addedSize; i++) {game.h++; game.w++}
+    
     if (saveData.game) {
-      // game.w = 6
-      // game.h = 6
-      game.tickDelay = (saveData.game.tickDelay || 1000)
-      game.auto = (saveData.game.auto || false)
-      game.unlockEff = (saveData.game.unlockEff || 1)
-      game.snake.size = (saveData.game.snakeSize || 2)
-      game.score = (saveData.game.score || 0)
-      game.foodEffect = (saveData.game.foodEffect || 1)
+      game.auto = sanityCheck(sd.game.auto, false)
+      game.snake.size = sanityCheck(sd.game.snakeSize, 2)
+      game.score = sanityCheck(sd.game.score, 0)
       if (saveData.game.foodNum) {
         for (let i = 0; i < saveData.game.foodNum - 1; i++) {
           game.addFood()
         }
-      } else {
-        console.log("Save data for game couldn't be found");
-      }
+      } 
+    } else {
+        console.warn("Save data for game couldn't be found");
     }
+
     if (saveData.upgrades) {
-      moneyUpgrade.cost = (saveData.upgrades.moneyCost || 10)
-      moneyUpgrade.lvl = (saveData.upgrades.moneyLevel || 0)
+      moneyUpgrade.cost = sanityCheck(sd.upgrades.moneyCost, 10)
+      moneyUpgrade.lvl = sanityCheck(sd.upgrades.moneyLevel, 0)
+      
+      speedUpgrade.cost = sanityCheck(sd.upgrades.speedCost, 100)
+      speedUpgrade.lvl = sanityCheck(sd.upgrades.speedLevel, 0)
+      
+      autoUpgrade.cost = sanityCheck(sd.upgrades.autoCost, 500)
+      autoUpgrade.lvl = sanityCheck(sd.upgrades.autoLevel, 0)
+      autoUnlocked = sanityCheck(sd?.haveAuto, false)
+      if (autoUnlocked) {
+        autoEnabled = true
+      }
+      
+      efficiencyUpgrade.cost = sanityCheck(sd.upgrades.effCost, 250)
+      efficiencyUpgrade.lvl = sanityCheck(sd.upgrades.effLevel, 0)
   
-      speedUpgrade.cost = (saveData.upgrades.speedCost || 250)
-      speedUpgrade.lvl = (saveData.upgrades.speedLevel || 0)
+      foodUpgrade.cost = sanityCheck(sd.upgrades.foodCost, 500)
+      foodUpgrade.lvl = sanityCheck(sd.upgrades.foodLvl, 0)
   
-      autoUpgrade.cost = (saveData.upgrades.autoCost || 1000)
-      autoUpgrade.lvl = (saveData.upgrades.autoLevel || 0)
-  
-      efficiencyUpgrade.cost = (saveData.upgrades.effCost || 250)
-      efficiencyUpgrade.lvl = (saveData.upgrades.effLevel || 0)
-  
-      foodUpgrade.cost = (saveData.upgrades.foodCost || 500)
-      foodUpgrade.lvl = (saveData.upgrades.foodLvl || 0)
-  
-      startingLengthUpgrade.cost = (saveData.upgrades.startLengthCost || 100)
-      startingLengthUpgrade.lvl = (saveData.upgrades.startLengthLvl || 0)
+      startingLengthUpgrade.cost = sanityCheck(sd.upgrades.startLengthCost, 100)
+      startingLengthUpgrade.lvl = sanityCheck(sd.upgrades.startLengthLvl, 0)
     } else {
       console.log("Save data for upgrades couldn't be found");
     }
+
     if (saveData.settings) {
-      settings.volume = (saveData.settings.volume || 20);
+      settings.volume = sanityCheck(sd.settings.volume, 20)
       settings.volumeSlider.value = settings.volume;
-      settings.advancedStats = (saveData.settings.advancedStats || false);
-      settings.autoPause = (saveData.settings.autoPause || false);
+      settings.advancedStats = sanityCheck(sd.settings.advancedStats, false)
+      settings.autoPause = sanityCheck(sd.settings.autoPause, 20)
     }
     if (saveData.version) {
       lastVersion = saveData.version;
     }
-  } catch {
-    console.log("Error loading save data");
-  }
+  // } catch {
+  //   console.log("Error loading save data");
+  // }
 }
 
 function reset () {
   // if (confirm('Are you sure you want to reset? This cannot be undone.')){
     resetting = true
-    localStorage.removeItem('snakeIncSave')
+    localStorage.setItem('snakeIncSave', "{}")
     // load()
     location.reload()
   // }
